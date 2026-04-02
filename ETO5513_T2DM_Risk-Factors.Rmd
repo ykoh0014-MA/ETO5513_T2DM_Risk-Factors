@@ -2,11 +2,13 @@
 title: "ETO5513_T2DM_Risk-Factors"
 author: "Eileen Koh"
 date: "2026-04-01"
-output: html_document
+output:
+  bookdown::html_document2:
+    keep_md: true
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE)
 ```
 
 ## R Markdown
