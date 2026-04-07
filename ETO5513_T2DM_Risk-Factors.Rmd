@@ -28,7 +28,7 @@ library(tableone)
 ```
 
 
-```{r load}
+```{r load_data}
 
 dmdf<-read_csv("Data/diabetes_dataset.csv")
 head(dmdf)
@@ -44,4 +44,54 @@ dmdf <- dmdf %>%
 
 
 ```
+
+
+
+## Table 3: Association of Clinical Variables with  Diabetes Diagnosis 
+
+```{r table3}
+
+vars <- c( "bmi", "waist_to_hip_ratio", "systolic_bp",
+           "diastolic_bp", "heart_rate", "cholesterol_total", "hdl_cholesterol",
+           "ldl_cholesterol", "triglycerides", "glucose_fasting", "glucose_postprandial", "hba1c", "diabetes_risk_score",
+           "diabetes_stage")
+table_three <- CreateTableOne(vars = vars,
+                              strata = "diagnosed_diabetes",
+                              data = dmdf,
+                              factorVars = c( "diabetes_stage"))
+
+
+knitr::kable(
+  print(table_three, showAllLevels = TRUE),
+  caption = "Baseline Characteristics of patients"
+)
+
+
+
+```
+
+
+
+
+## Chart 3. Boxplot of Systolic BP vs Diabetes Diagnosis
+
+```{r chart3}
+
+ggplot(dmdf, aes(x = diagnosed_diabetes, y = systolic_bp, fill = diagnosed_diabetes)) +
+  geom_boxplot(alpha = 0.5) +
+  scale_fill_manual(values = c("purple", "green")) +
+  labs(title = "Systolic BP by Diabetes Diagnosis",
+       y = "Systolic BP", x = "Diabetes Diagnosis") +
+  theme_minimal() +
+  theme(legend.position = "none")
+````
+
+# Interpretation:
+
+Table \@ref(tab:table3) reveals the differences in clinical parameters between individuals with and without diagnosed diabetes. Among 100,000 participants, 40,002 were non-diabetic and 59,998 diabetic. Those with diabetes showed higher BMI, waist-to-hip ratio, blood pressure, heart rate, and adverse lipid profiles, including elevated total cholesterol, LDL, and triglycerides, alongside lower HDL. Glucose measures were also higher, with fasting, postprandial, and HbA1c values well above non-diabetic levels. Nearly all diagnosed cases were Type 2 diabetes (99.6%), while most non-diabetics were classified as pre-diabetes. All differences were statistically significant (p < 0.001).
+
+
+
+
+
 
