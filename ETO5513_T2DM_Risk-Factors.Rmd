@@ -77,7 +77,7 @@ knitr::kable(
 
 ## Chart 3. Boxplot of Systolic BP vs Diabetes Diagnosis
 
-```{r chart3}
+```{r chart3, fig.cap="Boxplot of Systolic BP by Diabetes Diagnosis"}
 
 ggplot(dmdf, aes(x = diagnosed_diabetes, y = systolic_bp, fill = diagnosed_diabetes)) +
   geom_boxplot(alpha = 0.5) +
@@ -92,6 +92,43 @@ ggplot(dmdf, aes(x = diagnosed_diabetes, y = systolic_bp, fill = diagnosed_diabe
 
 Table \@ref(tab:table3) reveals the differences in clinical parameters between individuals with and without diagnosed diabetes. Among 100,000 participants, 40,002 were non-diabetic and 59,998 diabetic. Those with diabetes showed higher BMI, waist-to-hip ratio, blood pressure, heart rate, and adverse lipid profiles, including elevated total cholesterol, LDL, and triglycerides, alongside lower HDL. Glucose measures were also higher, with fasting, postprandial, and HbA1c values well above non-diabetic levels. Nearly all diagnosed cases were Type 2 diabetes (99.6%), while most non-diabetics were classified as pre-diabetes. All differences were statistically significant (p < 0.001).
 
+
+Chart \@ref(tab:chart3) compares systolic blood pressure between individuals with and without diabetes. The median systolic BP is slightly higher among those diagnosed with diabetes, with a broader distribution and more outliers.
+
+
+To determine the risk factors of diabetes, potential factors from the above analysis will be included in the logistic regression model to obtain the adjusted coefficients. 
+
+## Table 4. Risk factors of diabetes using logistic regression 
+
+
+```{r LR}
+
+
+
+model <- glm(diagnosed_diabetes ~ age  + family_history_diabetes + hypertension_history +cardiovascular_history + screen_time_hours_per_day + bmi + physical_activity_minutes_per_week  + diet_score + hba1c + glucose_fasting + glucose_postprandial + waist_to_hip_ratio + systolic_bp + diastolic_bp + heart_rate + cholesterol_total + hdl_cholesterol +  ldl_cholesterol + triglycerides, 
+             data = dmdf,
+             family = binomial)
+vif(model)
+summary(model)
+
+# Obtain the odds ratio
+
+table_or <- tidy(model) %>%
+  mutate(
+    OR = exp(estimate),
+    CI_low = exp(estimate - 1.96 * std.error),
+    CI_high = exp(estimate + 1.96 * std.error)
+  ) %>%
+  select(term, OR, CI_low, CI_high, p.value)
+
+table_or
+
+```
+
+
+* Interpretation * 
+
+The logistic regression identified several significant predictors of diagnosed diabetes. Age (OR=1.01, p<0.001) and BMI (OR=1.01, p=0.027) were positively associated with diabetes, indicating increased risk with higher values. Family history showed a strong effect (OR=1.50, p<0.001), highlighting genetic predisposition. HbA1c was the strongest predictor (OR=30.7, p<0.001), followed by fasting glucose (OR=1.02, p<0.001), reflecting their clinical importance. Higher physical activity (OR<1, p<0.001) and better diet score (borderline significance) were protective. HDL cholesterol was also inversely associated (p=0.029). Other variables, including hypertension, cardiovascular history, and blood pressure, were not statistically significant after adjustment.
 
 
 
