@@ -1,8 +1,8 @@
 ---
 title: "ETO5513_T2DM_Risk-Factors"
 author: 
-  - "Eileen Koh"
   - "Kale-Ab Bobe"
+  - "Eileen Koh"
 date: "2026-04-01"
 output:
   bookdown::html_document2:
@@ -17,7 +17,7 @@ knitr::opts_chunk$set(echo = TRUE,   warning = FALSE,
 ```
 
 
-```{r load_libraries}
+```{r load_libraries, echo=FALSE, message=FALSE, warning=FALSE}
 
 
 library(knitr)
@@ -27,12 +27,14 @@ library(readxl)
 library(ggplot2)
 library(dplyr)
 library(bookdown)
+library(car)
+library(broom)
 library(tableone)
 
 ```
 
 
-```{r load_data}
+```{r load_data, echo=FALSE}
 
 dmdf<-read_csv("Data/diabetes_dataset.csv")
 head(dmdf)
@@ -41,19 +43,20 @@ summary(dmdf)
 
 
 dmdf <- dmdf %>%
-  mutate(diagnosed_diabetes = recode(diagnosed_diabetes, `0` = "No", `1` = "Yes"),
-         family_history_diabetes= recode(family_history_diabetes, `0` = "No", `1` = "Yes"),
-         hypertension_history = recode(hypertension_history, `0` = "No", `1` = "Yes"),
-         cardiovascular_history = recode(cardiovascular_history , `0` = "No", `1` = "Yes"))
-
+  mutate(
+    diagnosed_diabetes = factor(diagnosed_diabetes, levels = c(0, 1), labels = c("No", "Yes")),
+    family_history_diabetes = factor(family_history_diabetes, levels = c(0, 1), labels = c("No", "Yes")),
+    hypertension_history = factor(hypertension_history, levels = c(0, 1), labels = c("No", "Yes")),
+    cardiovascular_history = factor(cardiovascular_history, levels = c(0, 1), labels = c("No", "Yes"))
+  )
 
 ```
 
 
 
-## Table 3: Association of Clinical Variables with  Diabetes Diagnosis 
+# Table 3: Association of Clinical Variables with  Diabetes Diagnosis 
 
-```{r table3}
+```{r table3, echo=FALSE}
 
 vars <- c( "bmi", "waist_to_hip_ratio", "systolic_bp",
            "diastolic_bp", "heart_rate", "cholesterol_total", "hdl_cholesterol",
@@ -74,15 +77,15 @@ knitr::kable(
 
 ```
 
-# Interpretation:
+## Interpretation:
 
 Table \@ref(tab:table3) reveals the differences in clinical parameters between individuals with and without diagnosed diabetes. Among 100,000 participants, 40,002 were non-diabetic and 59,998 diabetic. Those with diabetes showed higher BMI, waist-to-hip ratio, blood pressure, heart rate, and adverse lipid profiles, including elevated total cholesterol, LDL, and triglycerides, alongside lower HDL. Glucose measures were also higher, with fasting, postprandial, and HbA1c values well above non-diabetic levels. Nearly all diagnosed cases were Type 2 diabetes (99.6%), while most non-diabetics were classified as pre-diabetes. All differences were statistically significant (p < 0.001).
 
 
 
-## Chart 3. Boxplot of Systolic BP vs Diabetes Diagnosis
+# Chart 3. Boxplot of Systolic BP vs Diabetes Diagnosis
 
-```{r chart3, fig.cap="Boxplot of Systolic BP by Diabetes Diagnosis"}
+```{r chart3, echo=FALSE, fig.cap="Boxplot of Systolic BP by Diabetes Diagnosis"}
 
 ggplot(dmdf, aes(x = diagnosed_diabetes, y = systolic_bp, fill = diagnosed_diabetes)) +
   geom_boxplot(alpha = 0.5) +
@@ -91,22 +94,25 @@ ggplot(dmdf, aes(x = diagnosed_diabetes, y = systolic_bp, fill = diagnosed_diabe
        y = "Systolic BP", x = "Diabetes Diagnosis") +
   theme_minimal() +
   theme(legend.position = "none")
-````
+```
 
-# Interpretation:
+## Interpretation:
 
 
-Chart \@ref(tab:chart3) compares systolic blood pressure between individuals with and without diabetes. The median systolic BP is slightly higher among those diagnosed with diabetes, with a broader distribution and more outliers.
+Chart \@ref(fig:chart3) compares systolic blood pressure between individuals with and without diabetes. The median systolic BP is slightly higher among those diagnosed with diabetes, with a broader distribution and more outliers.
 
 
 To determine the risk factors of diabetes, potential factors from the above analysis will be included in the logistic regression model to obtain the adjusted coefficients. 
 
-## Table 4. Risk factors of diabetes using logistic regression 
+
+Q4. What are the overall predictors of Diagnosed Diabetes? How does HbA1c level predict the probability of diabetes, and where are the critical thresholds for risk classification?
+
+# Table 4. Risk factors of diabetes using logistic regression 
 
 
-```{r LR}
+```{r LR, echo=FALSE}
 
-
+# Run logistic regression
 
 model <- glm(diagnosed_diabetes ~ age  + family_history_diabetes + hypertension_history +cardiovascular_history + screen_time_hours_per_day + bmi + physical_activity_minutes_per_week  + diet_score + hba1c + glucose_fasting + glucose_postprandial + waist_to_hip_ratio + systolic_bp + diastolic_bp + heart_rate + cholesterol_total + hdl_cholesterol +  ldl_cholesterol + triglycerides, 
              data = dmdf,
@@ -129,11 +135,73 @@ table_or
 ```
 
 
-* Interpretation * 
+## Interpretation 
 
 The logistic regression identified several significant predictors of diagnosed diabetes. Age (OR=1.01, p<0.001) and BMI (OR=1.01, p=0.027) were positively associated with diabetes, indicating increased risk with higher values. Family history showed a strong effect (OR=1.50, p<0.001), highlighting genetic predisposition. HbA1c was the strongest predictor (OR=30.7, p<0.001), followed by fasting glucose (OR=1.02, p<0.001), reflecting their clinical importance. Higher physical activity (OR<1, p<0.001) and better diet score (borderline significance) were protective. HDL cholesterol was also inversely associated (p=0.029). Other variables, including hypertension, cardiovascular history, and blood pressure, were not statistically significant after adjustment.
 
 
 
 
+# Chart 4.  Predicted Probability of Diabetes (y) by HbA1c (x)
 
+```{r chart4, echo=FALSE}
+
+# Predicted probabilities dataset
+
+newdata <- data.frame(
+  hba1c = seq(min(dmdf$hba1c, na.rm = TRUE),
+              max(dmdf$hba1c, na.rm = TRUE),
+              length.out = 100),
+  age = mean(dmdf$age, na.rm = TRUE),
+  bmi = mean(dmdf$bmi, na.rm = TRUE),
+  waist_to_hip_ratio =  mean(dmdf$waist_to_hip_ratio, na.rm = TRUE),
+  physical_activity_minutes_per_week = mean(dmdf$physical_activity_minutes_per_week, na.rm = TRUE),
+  diet_score = mean(dmdf$diet_score, na.rm = TRUE),
+  screen_time_hours_per_day = mean(dmdf$screen_time_hours_per_day, na.rm = TRUE),
+  glucose_fasting = mean(dmdf$glucose_fasting, na.rm = TRUE),
+  glucose_postprandial = mean(dmdf$glucose_postprandial, na.rm = TRUE),
+  systolic_bp = mean(dmdf$systolic_bp, na.rm = TRUE),   
+  diastolic_bp  = mean(dmdf$diastolic_bp , na.rm = TRUE), 
+  heart_rate = mean(dmdf$heart_rate, na.rm = TRUE),   
+  cholesterol_total   = mean(dmdf$cholesterol_total  , na.rm = TRUE), 
+  hdl_cholesterol   = mean(dmdf$hdl_cholesterol, na.rm = TRUE),   
+  ldl_cholesterol  = mean(dmdf$ldl_cholesterol  , na.rm = TRUE), 
+  triglycerides  = mean(dmdf$triglycerides , na.rm = TRUE),   
+  family_history_diabetes = factor("Yes", levels = c("No","Yes")),
+  hypertension_history = factor("No", levels = c("No","Yes")),
+  cardiovascular_history = factor("Yes", levels = c("No","Yes")),
+  hypertension_history = factor("No", levels = c("No","Yes"))
+)
+
+
+newdata$predicted_prob <- predict(model, newdata, type = "response")
+
+#Plot
+
+library(ggplot2)
+
+ggplot(newdata, aes(x = hba1c, y = predicted_prob)) +
+  geom_line() +
+  labs(
+    title = "Predicted Probability of Diabetes by HbA1c",
+    x = "HbA1c",
+    y = "Predicted Probability"
+  ) +
+  theme_minimal()
+
+
+
+
+```
+
+## Interpretation:
+
+Chart \@ref(fig:chart4) shows that at low HbA1c values (around 4–5.5%), the predicted probability of diabetes is near zero, indicating minimal risk.
+As HbA1c rises into the intermediate range (approximately 6–8%), the predicted probability increases sharply, indicating that HbA1c ≈ 6.5% as a critical threshold where individuals move from low to high risk. 
+Beyond HbA1c values of 8, the predicted probability approaches 1, suggesting that nearly all individuals in this range are classified as diabetic.
+
+
+
+
+## Conclusion
+HbA1c levels strongly predict diabetes probability, with a sharp inflection around 6.5%, marking a clinically relevant threshold for risk classification
