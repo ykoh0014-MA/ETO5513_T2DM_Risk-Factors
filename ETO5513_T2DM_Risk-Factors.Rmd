@@ -33,6 +33,8 @@ library(tableone)
 
 ```
 
+** Exploring Data ** 
+
 
 ```{r load_data, echo=FALSE}
 
@@ -52,6 +54,8 @@ dmdf <- dmdf %>%
 
 ```
 
+
+To understand the association of clinical variables with diabetes, independent t-test and chi-square test are performed to determine the potential significant risk factors of diabetes.
 
 
 # Table 3: Association of Clinical Variables with  Diabetes Diagnosis 
@@ -144,7 +148,7 @@ The logistic regression identified several significant predictors of diagnosed d
 
 # Chart 4.  Predicted Probability of Diabetes (y) by HbA1c (x)
 
-```{r chart4, echo=FALSE}
+```{r pred_prob, echo=FALSE}
 
 # Predicted probabilities dataset
 
@@ -175,6 +179,9 @@ newdata <- data.frame(
 
 
 newdata$predicted_prob <- predict(model, newdata, type = "response")
+```
+
+```{r chart4, echo=FALSE, fig.cap="Predicted Probability of Diabetes by HbA1c"}
 
 #Plot
 
