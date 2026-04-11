@@ -1,6 +1,8 @@
 ---
 title: "ETO5513_T2DM_Risk-Factors"
-author: "Eileen Koh"
+author: 
+  - "Eileen Koh"
+  - "Kale-Ab Bobe"
 date: "2026-04-01"
 output:
   bookdown::html_document2:
@@ -72,6 +74,9 @@ knitr::kable(
 
 ```
 
+# Interpretation:
+
+Table \@ref(tab:table3) reveals the differences in clinical parameters between individuals with and without diagnosed diabetes. Among 100,000 participants, 40,002 were non-diabetic and 59,998 diabetic. Those with diabetes showed higher BMI, waist-to-hip ratio, blood pressure, heart rate, and adverse lipid profiles, including elevated total cholesterol, LDL, and triglycerides, alongside lower HDL. Glucose measures were also higher, with fasting, postprandial, and HbA1c values well above non-diabetic levels. Nearly all diagnosed cases were Type 2 diabetes (99.6%), while most non-diabetics were classified as pre-diabetes. All differences were statistically significant (p < 0.001).
 
 
 
@@ -89,8 +94,6 @@ ggplot(dmdf, aes(x = diagnosed_diabetes, y = systolic_bp, fill = diagnosed_diabe
 ````
 
 # Interpretation:
-
-Table \@ref(tab:table3) reveals the differences in clinical parameters between individuals with and without diagnosed diabetes. Among 100,000 participants, 40,002 were non-diabetic and 59,998 diabetic. Those with diabetes showed higher BMI, waist-to-hip ratio, blood pressure, heart rate, and adverse lipid profiles, including elevated total cholesterol, LDL, and triglycerides, alongside lower HDL. Glucose measures were also higher, with fasting, postprandial, and HbA1c values well above non-diabetic levels. Nearly all diagnosed cases were Type 2 diabetes (99.6%), while most non-diabetics were classified as pre-diabetes. All differences were statistically significant (p < 0.001).
 
 
 Chart \@ref(tab:chart3) compares systolic blood pressure between individuals with and without diabetes. The median systolic BP is slightly higher among those diagnosed with diabetes, with a broader distribution and more outliers.
