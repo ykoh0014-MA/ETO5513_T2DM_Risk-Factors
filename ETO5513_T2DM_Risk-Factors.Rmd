@@ -174,3 +174,42 @@ table1 <- data.frame(
 kable(table1, caption = "Table 1: Demographics by Diabetes Diagnosis", align = "lcc")
 
 Individuals with diabetes are on average, older than those without diabetes (51.9 vs 47.5 years), indicating age may be associated with increased likelihood of diabetes diagnosis. In contrast, all other demographic characteristics are highly similar between the two groups. Gender distribution is nearly identical, with males and females each comprising roughly half of both populations. Ethnicity is also consistent, with White individuals representing the largest proportion (~45%), followed by Hispanic, Black, Asian, and Other groups. Education, income, and employment status show minimal variation, suggesting no substantial socio-demographic differences apart from age in this dataset.
+
+{r, include=TRUE}
+# Means
+mean_yes <- mean(yes$age, na.rm = TRUE)
+mean_no  <- mean(no$age, na.rm = TRUE)
+# Distribution
+ggplot(data, aes(x = age, fill = diabetes)) +
+  geom_density(alpha = 0.5, colour = NA) +
+  
+  # Mean lines
+  geom_vline(xintercept = mean_no, linetype = "dashed", linewidth = 0.8) +
+  geom_vline(xintercept = mean_yes, linetype = "dashed", linewidth = 0.8) +
+  
+  # Labels
+  annotate("text", x = mean_no, y = 0.025,
+           label = paste0("No: ", round(mean_no,1)),
+           angle = 90, vjust = -0.5, size = 3) +
+  
+  annotate("text", x = mean_yes, y = 0.025,
+           label = paste0("Yes: ", round(mean_yes,1)),
+           angle = 90, vjust = -0.5, size = 3) +
+  
+  
+  labs(
+    title = "Chart 1: Age Distribution by Diabetes Status",
+    subtitle = "Density plot with mean age indicated",
+    x = "Age (years)",
+    y = "Density",
+    fill = "Diabetes Status"
+  ) +
+  
+  # Tufte-style minimalism
+  theme_minimal(base_size = 12) +
+  theme(
+    legend.position = "top",
+    plot.title = element_text(face = "bold"),
+    plot.subtitle = element_text(size = 10),
+    panel.grid.minor = element_blank()
+  )
