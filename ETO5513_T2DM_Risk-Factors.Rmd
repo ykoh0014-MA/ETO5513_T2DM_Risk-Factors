@@ -13,3 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(knitr)
 library(ggplot2)
+
+{r, include=TRUE}
+# Load dataset 
+data <- read_csv("Data/diabetes_dataset.csv")
