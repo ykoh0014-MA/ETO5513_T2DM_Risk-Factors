@@ -1,6 +1,8 @@
 ---
 title: "ETO5513_T2DM_Risk-Factors"
-author: "Eileen Koh"
+author: 
+  - "Kale-Ab Bobe"
+  - "Eileen Koh"
 date: "2026-04-01"
 output:
   bookdown::html_document2:
