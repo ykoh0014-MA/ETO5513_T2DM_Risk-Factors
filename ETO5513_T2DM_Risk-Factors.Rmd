@@ -291,3 +291,15 @@ kable(table2,
       align = "lc")
 ```
 Table 2 shows clear variation in diabetes risk score across lifestyle groups. Individuals with low physical activity have a higher mean risk score (~33–35) compared to those with high activity (~20–25). A similar pattern is seen for diet, where a poor diet group records a higher risk score (~30–34) than the good diet group (~22–26). For sleep, those with low sleep show greater risk (~32–36) compared to adequate sleep (~24–28). Finally, high screen time is associated with higher risk (~31–35) versus low screen time (~22–26). Overall, healthier behaviours consistently correspond to lower diabetes risk.
+
+```{r, include=TRUE}
+ggplot(data, aes(screen_time_hours_per_day, diabetes_risk_score)) +
+  geom_point(alpha = 0.15, size = 0.7) +
+  geom_smooth(method = "lm", se = TRUE, color = "blue") +
+  theme_minimal() +
+  labs(
+    title = "Chart 2: Scatter Plot Screen Time vs Diabetes Risk",
+    x = "Screen Time (hours per day)",
+    y = "Diabetes Risk Score"
+  )
+```
