@@ -172,10 +172,10 @@ table1 <- data.frame(
 )
 
 kable(table1, caption = "Table 1: Demographics by Diabetes Diagnosis", align = "lcc")
-
+```
 Individuals with diabetes are on average, older than those without diabetes (51.9 vs 47.5 years), indicating age may be associated with increased likelihood of diabetes diagnosis. In contrast, all other demographic characteristics are highly similar between the two groups. Gender distribution is nearly identical, with males and females each comprising roughly half of both populations. Ethnicity is also consistent, with White individuals representing the largest proportion (~45%), followed by Hispanic, Black, Asian, and Other groups. Education, income, and employment status show minimal variation, suggesting no substantial socio-demographic differences apart from age in this dataset.
 
-{r, include=TRUE}
+```{r, include=TRUE}
 # Means
 mean_yes <- mean(yes$age, na.rm = TRUE)
 mean_no  <- mean(no$age, na.rm = TRUE)
@@ -213,3 +213,5 @@ ggplot(data, aes(x = age, fill = diabetes)) +
     plot.subtitle = element_text(size = 10),
     panel.grid.minor = element_blank()
   )
+```
+Individuals with diabetes were older on average than those without the condition. The density curves showed a clear skew towards the right for the diabetic group, with mean age higher (51.1 years) compared with non‑diabetic participants (47.4 years). The diabetic distribution was more concentrated around middle age, while the non‑diabetic group displayed a broader spread. These patterns indicate a consistent association between increasing age and diabetes presence.
