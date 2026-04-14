@@ -303,3 +303,5 @@ ggplot(data, aes(screen_time_hours_per_day, diabetes_risk_score)) +
     y = "Diabetes Risk Score"
   )
 ```
+
+Chart 2 shows the relationship between screen time and diabetes risk score. The scatterplot reveals a highly dispersed distribution of points, indicating substantial variability in risk scores across all levels of screen time. The fitted regression line shows a very weak positive trend, suggesting that higher screen time is only marginally associated with increased diabetes risk. Overall, screen time alone appears to be a poor predictor of diabetes risk.
