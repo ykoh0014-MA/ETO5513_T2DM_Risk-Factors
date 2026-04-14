@@ -16,7 +16,7 @@ library(tidyverse)
 library(knitr)
 library(ggplot2)
 
-{r, include=TRUE}
+{r, echo=FALSE}
 # Load dataset 
 data <- read_csv("Data/diabetes_dataset.csv")
 
@@ -177,7 +177,7 @@ kable(table1, caption = "Table 1: Demographics by Diabetes Diagnosis", align = "
 ```
 Individuals with diabetes are on average, older than those without diabetes (51.9 vs 47.5 years), indicating age may be associated with increased likelihood of diabetes diagnosis. In contrast, all other demographic characteristics are highly similar between the two groups. Gender distribution is nearly identical, with males and females each comprising roughly half of both populations. Ethnicity is also consistent, with White individuals representing the largest proportion (~45%), followed by Hispanic, Black, Asian, and Other groups. Education, income, and employment status show minimal variation, suggesting no substantial socio-demographic differences apart from age in this dataset.
 
-```{r, include=TRUE}
+```{r, echo=FALSE}
 # Means
 mean_yes <- mean(yes$age, na.rm = TRUE)
 mean_no  <- mean(no$age, na.rm = TRUE)
@@ -218,7 +218,7 @@ ggplot(data, aes(x = age, fill = diabetes)) +
 ```
 Individuals with diabetes were older on average than those without the condition. The density curves showed a clear skew towards the right for the diabetic group, with mean age higher (51.1 years) compared with non‑diabetic participants (47.4 years). The diabetic distribution was more concentrated around middle age, while the non‑diabetic group displayed a broader spread. These patterns indicate a consistent association between increasing age and diabetes presence.
 
-```{r, include=TRUE}
+```{r, echo=FALSE}
 
 # Grouping
 data <- data %>%
@@ -294,7 +294,7 @@ kable(table2,
 ```
 Table 2 shows clear variation in diabetes risk score across lifestyle groups. Individuals with low physical activity have a higher mean risk score (~33–35) compared to those with high activity (~20–25). A similar pattern is seen for diet, where a poor diet group records a higher risk score (~30–34) than the good diet group (~22–26). For sleep, those with low sleep show greater risk (~32–36) compared to adequate sleep (~24–28). Finally, high screen time is associated with higher risk (~31–35) versus low screen time (~22–26). Overall, healthier behaviours consistently correspond to lower diabetes risk.
 
-```{r, include=TRUE}
+```{r, echo=FALSE}
 ggplot(data, aes(screen_time_hours_per_day, diabetes_risk_score)) +
   geom_point(alpha = 0.15, size = 0.7) +
   geom_smooth(method = "lm", se = TRUE, color = "blue") +
