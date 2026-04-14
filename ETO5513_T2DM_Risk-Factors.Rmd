@@ -17,3 +17,158 @@ library(ggplot2)
 {r, include=TRUE}
 # Load dataset 
 data <- read_csv("Data/diabetes_dataset.csv")
+
+# Standardize
+data <- data %>%
+  mutate(
+    diabetes = ifelse(diagnosed_diabetes == 1, "Yes", "No"),
+    education_level = case_when(
+      education_level %in% c("Post Graduate", "Postgraduate") ~ "Postgraduate",
+      education_level %in% c("No Formal", "No formal") ~ "No formal",
+      TRUE ~ education_level
+    ),
+    income_level = case_when(
+      income_level %in% c("Lower middle", "Lower-Middle") ~ "Lower-Middle",
+      income_level %in% c("Upper middle", "Upper-Middle") ~ "Upper-Middle",
+      TRUE ~ income_level
+    )
+  )
+
+
+fmt <- function(x, total) {
+  paste0(x, " (", round(x/total*100,1), "%)")
+}
+
+# Split groups
+yes <- data %>% filter(diabetes == "Yes")
+no  <- data %>% filter(diabetes == "No")
+
+# Totals
+n_yes <- nrow(yes)
+n_no  <- nrow(no)
+
+# Employment levels (ordered manually)
+employment_levels <- c("Employed", "Unemployed", "Student", "Retired")
+
+# Build table (FIXED)
+table1 <- data.frame(
+  Variable = c(
+    "Age (Mean ± SD)", "",
+    
+    "Gender",
+    "  Male",
+    "  Female",
+    "",
+    
+    "Ethnicity",
+    "  Asian",
+    "  White",
+    "  Hispanic",
+    "  Black",
+    "  Other",
+    "",
+    
+    "Education Level",
+    "  Highschool",
+    "  Graduate",
+    "  Postgraduate",
+    "  No formal",
+    "",
+    
+    "Income Level",
+    "  Low",
+    "  Lower-Middle",
+    "  Middle",
+    "  Upper-Middle",
+    "  High",
+    "",
+    
+    "Employment Status",
+    "  Employed",
+    "  Unemployed",
+    "  Student",
+    "  Retired"
+  ),
+  
+  `No Diabetes` = c(
+    paste0(round(mean(no$age, na.rm=TRUE),1), " ± ", round(sd(no$age, na.rm=TRUE),1)),
+    "",
+    
+    "",
+    fmt(sum(no$gender=="Male", na.rm=TRUE), n_no),
+    fmt(sum(no$gender=="Female", na.rm=TRUE), n_no),
+    "",
+    
+    "",
+    fmt(sum(no$ethnicity=="Asian", na.rm=TRUE), n_no),
+    fmt(sum(no$ethnicity=="White", na.rm=TRUE), n_no),
+    fmt(sum(no$ethnicity=="Hispanic", na.rm=TRUE), n_no),
+    fmt(sum(no$ethnicity=="Black", na.rm=TRUE), n_no),
+    fmt(sum(no$ethnicity=="Other", na.rm=TRUE), n_no),
+    "",
+    
+    "",
+    fmt(sum(no$education_level=="Highschool", na.rm=TRUE), n_no),
+    fmt(sum(no$education_level=="Graduate", na.rm=TRUE), n_no),
+    fmt(sum(no$education_level=="Postgraduate", na.rm=TRUE), n_no),
+    fmt(sum(no$education_level=="No formal", na.rm=TRUE), n_no),
+    "",
+    
+    "",
+    fmt(sum(no$income_level=="Low", na.rm=TRUE), n_no),
+    fmt(sum(no$income_level=="Lower-Middle", na.rm=TRUE), n_no),
+    fmt(sum(no$income_level=="Middle", na.rm=TRUE), n_no),
+    fmt(sum(no$income_level=="Upper-Middle", na.rm=TRUE), n_no),
+    fmt(sum(no$income_level=="High", na.rm=TRUE), n_no),
+    "",
+    
+    "",
+    fmt(sum(no$employment_status=="Employed", na.rm=TRUE), n_no),
+    fmt(sum(no$employment_status=="Unemployed", na.rm=TRUE), n_no),
+    fmt(sum(no$employment_status=="Student", na.rm=TRUE), n_no),
+    fmt(sum(no$employment_status=="Retired", na.rm=TRUE), n_no)
+  ),
+  
+  `Diabetes` = c(
+    paste0(round(mean(yes$age, na.rm=TRUE),1), " ± ", round(sd(yes$age, na.rm=TRUE),1)),
+    "",
+    
+    "",
+    fmt(sum(yes$gender=="Male", na.rm=TRUE), n_yes),
+    fmt(sum(yes$gender=="Female", na.rm=TRUE), n_yes),
+    "",
+    
+    "",
+    fmt(sum(yes$ethnicity=="Asian", na.rm=TRUE), n_yes),
+    fmt(sum(yes$ethnicity=="White", na.rm=TRUE), n_yes),
+    fmt(sum(yes$ethnicity=="Hispanic", na.rm=TRUE), n_yes),
+    fmt(sum(yes$ethnicity=="Black", na.rm=TRUE), n_yes),
+    fmt(sum(yes$ethnicity=="Other", na.rm=TRUE), n_yes),
+    "",
+    
+    "",
+    fmt(sum(yes$education_level=="Highschool", na.rm=TRUE), n_yes),
+    fmt(sum(yes$education_level=="Graduate", na.rm=TRUE), n_yes),
+    fmt(sum(yes$education_level=="Postgraduate", na.rm=TRUE), n_yes),
+    fmt(sum(yes$education_level=="No formal", na.rm=TRUE), n_yes),
+    "",
+    
+    "",
+    fmt(sum(yes$income_level=="Low", na.rm=TRUE), n_yes),
+    fmt(sum(yes$income_level=="Lower-Middle", na.rm=TRUE), n_yes),
+    fmt(sum(yes$income_level=="Middle", na.rm=TRUE), n_yes),
+    fmt(sum(yes$income_level=="Upper-Middle", na.rm=TRUE), n_yes),
+    fmt(sum(yes$income_level=="High", na.rm=TRUE), n_yes),
+    "",
+    
+    "",
+    fmt(sum(yes$employment_status=="Employed", na.rm=TRUE), n_yes),
+    fmt(sum(yes$employment_status=="Unemployed", na.rm=TRUE), n_yes),
+    fmt(sum(yes$employment_status=="Student", na.rm=TRUE), n_yes),
+    fmt(sum(yes$employment_status=="Retired", na.rm=TRUE), n_yes)
+  ),
+  
+  stringsAsFactors = FALSE
+)
+
+kable(table1, caption = "Table 1: Demographics by Diabetes Diagnosis", align = "lcc")
