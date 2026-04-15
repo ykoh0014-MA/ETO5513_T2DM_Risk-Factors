@@ -8,9 +8,14 @@ output:
   bookdown::html_document2:
     keep_md: true
 ---
-```{r setup, include=FALSE}
 
-knitr::opts_chunk$set(echo = TRUE)
+
+# What are the overall predictors of Diagnosed Diabetes? How does HbA1c level predict the probability of diabetes, and where are the critical thresholds for risk classification?
+
+
+
+```{r load_libraries, echo=FALSE, message=FALSE, warning=FALSE}
+
 
 library(knitr)
 library(markdown)
@@ -19,8 +24,11 @@ library(readxl)
 library(ggplot2)
 library(dplyr)
 library(bookdown)
+library(car)
+library(broom)
 library(tableone)
 ```
+# Demographics by Diabetes Diagnosis
 
 ```{r table1, echo=FALSE}
 # Load dataset 
@@ -182,7 +190,12 @@ table1 <- data.frame(
 kable(table1, caption = "Table 1: Demographics by Diabetes Diagnosis", align = "lcc")
 ```
 
-Interpretation: Individuals with diabetes are on average, older than those without diabetes (51.9 vs 47.5 years), indicating age may be associated with increased likelihood of diabetes diagnosis. In contrast, all other demographic characteristics are highly similar between the two groups. Gender distribution is nearly identical, with males and females each comprising roughly half of both populations. Ethnicity is also consistent, with White individuals representing the largest proportion (~45%), followed by Hispanic, Black, Asian, and Other groups. Education, income, and employment status show minimal variation, suggesting no substantial socio-demographic differences apart from age in this dataset.
+
+Interpretation: Table \@ref(tab:table1) shows individuals with diabetes are on average, older than those without diabetes (51.9 vs 47.5 years), indicating age may be associated with increased likelihood of diabetes diagnosis. In contrast, all other demographic characteristics are highly similar between the two groups. Gender distribution is nearly identical, with males and females each comprising roughly half of both populations. Ethnicity is also consistent, with White individuals representing the largest proportion (~45%), followed by Hispanic, Black, Asian, and Other groups. Education, income, and employment status show minimal variation, suggesting no substantial socio-demographic differences apart from age in this dataset.
+
+
+# Age Distribution by Diabetes Status
+
 
 ```{r chart1, echo=FALSE}
 # Means
@@ -224,10 +237,14 @@ ggplot(data, aes(x = age, fill = diabetes)) +
   )
 
 
+
 ```
 
 
-Interpretation: Individuals with diabetes were older on average than those without the condition. The density curves showed a clear skew towards the right for the diabetic group, with mean age higher (51.1 years) compared with non‑diabetic participants (47.4 years). The diabetic distribution was more concentrated around middle age, while the non‑diabetic group displayed a broader spread. These patterns indicate a consistent association between increasing age and diabetes presence.
+Interpretation: Chart \@ref(fig:chart1) shows individuals with diabetes were older on average than those without the condition. The density curves showed a clear skew towards the right for the diabetic group, with mean age higher (51.1 years) compared with non‑diabetic participants (47.4 years). The diabetic distribution was more concentrated around middle age, while the non‑diabetic group displayed a broader spread. These patterns indicate a consistent association between increasing age and diabetes presence.
+
+
+# Diabetes Risk Score by Lifestyle Factors
 
 ```{r table2, echo=FALSE}
 
@@ -243,10 +260,11 @@ data <- data %>%
     sleep_group = ifelse(sleep_hours_per_day >= 7,
                          "Adequate Sleep", "Low Sleep"),
 
-
     screen_time_group = ifelse(screen_time_hours_per_day >= median(screen_time_hours_per_day, na.rm = TRUE),
                                "High Screen Time", "Low Screen Time")
   )
+
+
 
 # Mean ± SD
 mean_sd <- function(x) {
@@ -305,7 +323,9 @@ kable(table2,
       align = "lc")
 ```
 
-Interpretation: Table 2 shows clear variation in diabetes risk score across lifestyle groups. Individuals with low physical activity have a higher mean risk score (~33–35) compared to those with high activity (~20–25). A similar pattern is seen for diet, where a poor diet group records a higher risk score (~30–34) than the good diet group (~22–26). For sleep, those with low sleep show greater risk (~32–36) compared to adequate sleep (~24–28). Finally, high screen time is associated with higher risk (~31–35) versus low screen time (~22–26). Overall, healthier behaviours consistently correspond to lower diabetes risk.
+Interpretation: Table \@ref(tab:table2) shows clear variation in diabetes risk score across lifestyle groups. Individuals with low physical activity have a higher mean risk score (~33–35) compared to those with high activity (~20–25). A similar pattern is seen for diet, where a poor diet group records a higher risk score (~30–34) than the good diet group (~22–26). For sleep, those with low sleep show greater risk (~32–36) compared to adequate sleep (~24–28). Finally, high screen time is associated with higher risk (~31–35) versus low screen time (~22–26). Overall, healthier behaviours consistently correspond to lower diabetes risk.
+
+# Scatter Plot Screen Time vs Diabetes Risk
 
 ```{r chart2, echo=FALSE}
 ggplot(data, aes(screen_time_hours_per_day, diabetes_risk_score)) +
@@ -319,5 +339,168 @@ ggplot(data, aes(screen_time_hours_per_day, diabetes_risk_score)) +
   )
 ```
 
-Interpretation: Chart 2 shows the relationship between screen time and diabetes risk score. The scatterplot reveals a highly dispersed distribution of points, indicating substantial variability in risk scores across all levels of screen time. The fitted regression line shows a very weak positive trend, suggesting that higher screen time is only marginally associated with increased diabetes risk. Overall, screen time alone appears to be a poor predictor of diabetes risk.
+Interpretation: Chart \@ref(fig:chart2) shows the relationship between screen time and diabetes risk score. The scatterplot reveals a highly dispersed distribution of points, indicating substantial variability in risk scores across all levels of screen time. The fitted regression line shows a very weak positive trend, suggesting that higher screen time is only marginally associated with increased diabetes risk. Overall, screen time alone appears to be a poor predictor of diabetes risk.
+
+
+
+# Association of Clinical Variables with Diabetes Diagnosis 
+To understand the association of clinical variables with diabetes, independent t-test and chi-square test are performed to determine the potential significant risk factors of diabetes.
+
+```{r table3, echo=FALSE}
+
+data <- data %>%
+  mutate(
+    diagnosed_diabetes = factor(diagnosed_diabetes, levels = c(0, 1), labels = c("No", "Yes")),
+    family_history_diabetes = factor(family_history_diabetes, levels = c(0, 1), labels = c("No", "Yes")),
+    hypertension_history = factor(hypertension_history, levels = c(0, 1), labels = c("No", "Yes")),
+    cardiovascular_history = factor(cardiovascular_history, levels = c(0, 1), labels = c("No", "Yes"))
+  )
+  
+vars <- c( "bmi", "waist_to_hip_ratio", "systolic_bp",
+           "diastolic_bp", "heart_rate", "cholesterol_total", "hdl_cholesterol",
+           "ldl_cholesterol", "triglycerides", "glucose_fasting", "glucose_postprandial", "hba1c", "diabetes_risk_score",
+           "diabetes_stage")
+table_three <- CreateTableOne(vars = vars,
+                              strata = "diagnosed_diabetes",
+                              data = dmdf,
+                              factorVars = c( "diabetes_stage"))
+
+
+knitr::kable(
+  print(table_three, showAllLevels = TRUE),
+  caption = "Baseline Characteristics of patients"
+)
+
+
+
+```
+
+## Interpretation:
+
+Table \@ref(tab:table3) reveals the differences in clinical parameters between individuals with and without diagnosed diabetes. Among 100,000 participants, 40,002 were non-diabetic and 59,998 diabetic. Those with diabetes showed higher BMI, waist-to-hip ratio, blood pressure, heart rate, and adverse lipid profiles, including elevated total cholesterol, LDL, and triglycerides, alongside lower HDL. Glucose measures were also higher, with fasting, postprandial, and HbA1c values well above non-diabetic levels. Nearly all diagnosed cases were Type 2 diabetes (99.6%), while most non-diabetics were classified as pre-diabetes. All differences were statistically significant (p < 0.001).
+
+
+
+# Chart 3. Boxplot of Systolic BP vs Diabetes Diagnosis
+
+```{r chart3, echo=FALSE, fig.cap="Boxplot of Systolic BP by Diabetes Diagnosis"}
+
+ggplot(dmdf, aes(x = diagnosed_diabetes, y = systolic_bp, fill = diagnosed_diabetes)) +
+  geom_boxplot(alpha = 0.5) +
+  scale_fill_manual(values = c("purple", "green")) +
+  labs(title = "Systolic BP by Diabetes Diagnosis",
+       y = "Systolic BP", x = "Diabetes Diagnosis") +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+## Interpretation:
+
+
+Chart \@ref(fig:chart3) compares systolic blood pressure between individuals with and without diabetes. The median systolic BP is slightly higher among those diagnosed with diabetes, with a broader distribution and more outliers.
+
+
+To determine the risk factors of diabetes, potential factors from the above analysis will be included in the logistic regression model to obtain the adjusted coefficients. 
+
+
+
+# Risk factors of diabetes using logistic regression 
+
+
+```{r LR, echo=FALSE}
+
+# Run logistic regression
+
+model <- glm(diagnosed_diabetes ~ age  + family_history_diabetes + hypertension_history +cardiovascular_history + screen_time_hours_per_day + bmi + physical_activity_minutes_per_week  + diet_score + hba1c + glucose_fasting + glucose_postprandial + waist_to_hip_ratio + systolic_bp + diastolic_bp + heart_rate + cholesterol_total + hdl_cholesterol +  ldl_cholesterol + triglycerides, 
+             data = dmdf,
+             family = binomial)
+vif(model)
+summary(model)
+
+# Obtain the odds ratio
+
+table_or <- tidy(model) %>%
+  mutate(
+    OR = exp(estimate),
+    CI_low = exp(estimate - 1.96 * std.error),
+    CI_high = exp(estimate + 1.96 * std.error)
+  ) %>%
+  select(term, OR, CI_low, CI_high, p.value)
+```
+
+
+```{r table4, echo=FALSE}
+knitr::kable(table_or,  caption = "Association of risk factors with diabetes using Logistic Regression")
+
+```
+
+
+## Interpretation 
+
+The logistic regression in Table \@ref(tab:table4) identified several significant predictors of diagnosed diabetes. Age (OR=1.01, p<0.001) and BMI (OR=1.01, p=0.027) were positively associated with diabetes, indicating increased risk with higher values. Family history showed a strong effect (OR=1.50, p<0.001), highlighting genetic predisposition. HbA1c was the strongest predictor (OR=30.7, p<0.001), followed by fasting glucose (OR=1.02, p<0.001), reflecting their clinical importance. Higher physical activity (OR<1, p<0.001) and better diet score (borderline significance) were protective. HDL cholesterol was also inversely associated (p=0.029). Other variables, including hypertension, cardiovascular history, and blood pressure, were not statistically significant after adjustment.
+
+
+
+
+## Predicted Probability of Diabetes (y) by HbA1c (x)
+
+```{r pred_prob, echo=FALSE}
+
+# Predicted probabilities dataset
+
+newdata <- data.frame(
+  hba1c = seq(min(dmdf$hba1c, na.rm = TRUE),
+              max(dmdf$hba1c, na.rm = TRUE),
+              length.out = 100),
+  age = mean(dmdf$age, na.rm = TRUE),
+  bmi = mean(dmdf$bmi, na.rm = TRUE),
+  waist_to_hip_ratio =  mean(dmdf$waist_to_hip_ratio, na.rm = TRUE),
+  physical_activity_minutes_per_week = mean(dmdf$physical_activity_minutes_per_week, na.rm = TRUE),
+  diet_score = mean(dmdf$diet_score, na.rm = TRUE),
+  screen_time_hours_per_day = mean(dmdf$screen_time_hours_per_day, na.rm = TRUE),
+  glucose_fasting = mean(dmdf$glucose_fasting, na.rm = TRUE),
+  glucose_postprandial = mean(dmdf$glucose_postprandial, na.rm = TRUE),
+  systolic_bp = mean(dmdf$systolic_bp, na.rm = TRUE),   
+  diastolic_bp  = mean(dmdf$diastolic_bp , na.rm = TRUE), 
+  heart_rate = mean(dmdf$heart_rate, na.rm = TRUE),   
+  cholesterol_total   = mean(dmdf$cholesterol_total  , na.rm = TRUE), 
+  hdl_cholesterol   = mean(dmdf$hdl_cholesterol, na.rm = TRUE),   
+  ldl_cholesterol  = mean(dmdf$ldl_cholesterol  , na.rm = TRUE), 
+  triglycerides  = mean(dmdf$triglycerides , na.rm = TRUE),   
+  family_history_diabetes = factor("Yes", levels = c("No","Yes")),
+  hypertension_history = factor("No", levels = c("No","Yes")),
+  cardiovascular_history = factor("Yes", levels = c("No","Yes")),
+  hypertension_history = factor("No", levels = c("No","Yes"))
+)
+
+
+newdata$predicted_prob <- predict(model, newdata, type = "response")
+```
+
+```{r chart4, echo=FALSE, fig.cap="Predicted Probability of Diabetes by HbA1c"}
+
+#Plot
+
+library(ggplot2)
+
+ggplot(newdata, aes(x = hba1c, y = predicted_prob)) +
+  geom_line() +
+  labs(
+    title = "Predicted Probability of Diabetes by HbA1c",
+    x = "HbA1c",
+    y = "Predicted Probability"
+  ) +
+  theme_minimal()
+
+```
+
+## Interpretation:
+
+Chart \@ref(fig:chart4) shows that at low HbA1c values (around 4–5.5%), the predicted probability of diabetes is near zero, indicating minimal risk.
+As HbA1c rises into the intermediate range (approximately 6–8%), the predicted probability increases sharply, indicating that HbA1c ≈ 6.5% as a critical threshold where individuals move from low to high risk. 
+Beyond HbA1c values of 8, the predicted probability approaches 1, suggesting that nearly all individuals in this range are classified as diabetic.
+
+
+# Conclusion
+HbA1c levels strongly predict diabetes probability, with a sharp inflection around 6.5%, marking a clinically relevant threshold for risk classification
 
