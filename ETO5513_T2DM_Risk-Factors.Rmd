@@ -10,7 +10,14 @@ output:
 ---
 
 
-# What are the overall predictors of Diagnosed Diabetes? How does HbA1c level predict the probability of diabetes, and where are the critical thresholds for risk classification?
+# Introduction
+
+According to the 11th edition of the IDF Diabetes Atlas, by 2050 more than one in eight adults worldwide will be living with diabetes, and the global burden is projected to rise sharply in the coming years (International Diabetes Federation, 2025). The complications of diabetes include higher risks of cardiovascular disease, stroke, heart attack, and heart failure (Dam, Verma, & Jasrotia, 2025). Obesity, dietary risks, occupational risks, tobacco use, low physical activity, and alcohol consumption are major risk factors for type 2 diabetes (Ong, Stafford, McLaughlin, et al., 2023).
+Emerging evidence also suggests that sedentary behaviours, such as prolonged screen time, and inadequate or excessive sleep duration may contribute to increased diabetes risk through their effects on metabolic regulation and insulin sensitivity (Park, Moon, Kim, Kong, & Oh, 2020). Clinical biomarkers such as glycated haemoglobin (HbA1c), blood pressure, and cholesterol are widely recognized as key indicators of metabolic health, strongly linked to diabetes diagnosis, progression, and cardiovascular risk. Evaluating the interplay between these parameters and diabetes status yields valuable insights into disease management, risk stratification, and long-term health outcomes (Savvopoulos, Hatzikirou, & Jelinek, 2024).
+This study aims to: (1) describe the demographic profile of individuals with and without diabetes; (2) assess the association between lifestyle factors and diabetes; (3) evaluate the relationship between clinical variables and diabetes; and (4) identify the overall key risk factors for diabetes using logistic regression (5) identify critical thresholds for risk classification.
+
+
+
 
 
 
@@ -362,7 +369,7 @@ vars <- c( "bmi", "waist_to_hip_ratio", "systolic_bp",
            "diabetes_stage")
 table_three <- CreateTableOne(vars = vars,
                               strata = "diagnosed_diabetes",
-                              data = dmdf,
+                              data = data,
                               factorVars = c( "diabetes_stage"))
 
 
@@ -385,7 +392,7 @@ Table \@ref(tab:table3) reveals the differences in clinical parameters between i
 
 ```{r chart3, echo=FALSE, fig.cap="Boxplot of Systolic BP by Diabetes Diagnosis"}
 
-ggplot(dmdf, aes(x = diagnosed_diabetes, y = systolic_bp, fill = diagnosed_diabetes)) +
+ggplot(data, aes(x = diagnosed_diabetes, y = systolic_bp, fill = diagnosed_diabetes)) +
   geom_boxplot(alpha = 0.5) +
   scale_fill_manual(values = c("purple", "green")) +
   labs(title = "Systolic BP by Diabetes Diagnosis",
@@ -412,7 +419,7 @@ To determine the risk factors of diabetes, potential factors from the above anal
 # Run logistic regression
 
 model <- glm(diagnosed_diabetes ~ age  + family_history_diabetes + hypertension_history +cardiovascular_history + screen_time_hours_per_day + bmi + physical_activity_minutes_per_week  + diet_score + hba1c + glucose_fasting + glucose_postprandial + waist_to_hip_ratio + systolic_bp + diastolic_bp + heart_rate + cholesterol_total + hdl_cholesterol +  ldl_cholesterol + triglycerides, 
-             data = dmdf,
+             data = data,
              family = binomial)
 vif(model)
 summary(model)
@@ -449,24 +456,24 @@ The logistic regression in Table \@ref(tab:table4) identified several significan
 # Predicted probabilities dataset
 
 newdata <- data.frame(
-  hba1c = seq(min(dmdf$hba1c, na.rm = TRUE),
-              max(dmdf$hba1c, na.rm = TRUE),
+  hba1c = seq(min(data$hba1c, na.rm = TRUE),
+              max(data$hba1c, na.rm = TRUE),
               length.out = 100),
-  age = mean(dmdf$age, na.rm = TRUE),
-  bmi = mean(dmdf$bmi, na.rm = TRUE),
-  waist_to_hip_ratio =  mean(dmdf$waist_to_hip_ratio, na.rm = TRUE),
-  physical_activity_minutes_per_week = mean(dmdf$physical_activity_minutes_per_week, na.rm = TRUE),
-  diet_score = mean(dmdf$diet_score, na.rm = TRUE),
-  screen_time_hours_per_day = mean(dmdf$screen_time_hours_per_day, na.rm = TRUE),
-  glucose_fasting = mean(dmdf$glucose_fasting, na.rm = TRUE),
-  glucose_postprandial = mean(dmdf$glucose_postprandial, na.rm = TRUE),
-  systolic_bp = mean(dmdf$systolic_bp, na.rm = TRUE),   
-  diastolic_bp  = mean(dmdf$diastolic_bp , na.rm = TRUE), 
-  heart_rate = mean(dmdf$heart_rate, na.rm = TRUE),   
-  cholesterol_total   = mean(dmdf$cholesterol_total  , na.rm = TRUE), 
-  hdl_cholesterol   = mean(dmdf$hdl_cholesterol, na.rm = TRUE),   
-  ldl_cholesterol  = mean(dmdf$ldl_cholesterol  , na.rm = TRUE), 
-  triglycerides  = mean(dmdf$triglycerides , na.rm = TRUE),   
+  age = mean(data$age, na.rm = TRUE),
+  bmi = mean(data$bmi, na.rm = TRUE),
+  waist_to_hip_ratio =  mean(data$waist_to_hip_ratio, na.rm = TRUE),
+  physical_activity_minutes_per_week = mean(data$physical_activity_minutes_per_week, na.rm = TRUE),
+  diet_score = mean(data$diet_score, na.rm = TRUE),
+  screen_time_hours_per_day = mean(data$screen_time_hours_per_day, na.rm = TRUE),
+  glucose_fasting = mean(data$glucose_fasting, na.rm = TRUE),
+  glucose_postprandial = mean(data$glucose_postprandial, na.rm = TRUE),
+  systolic_bp = mean(data$systolic_bp, na.rm = TRUE),   
+  diastolic_bp  = mean(data$diastolic_bp , na.rm = TRUE), 
+  heart_rate = mean(data$heart_rate, na.rm = TRUE),   
+  cholesterol_total   = mean(data$cholesterol_total  , na.rm = TRUE), 
+  hdl_cholesterol   = mean(data$hdl_cholesterol, na.rm = TRUE),   
+  ldl_cholesterol  = mean(data$ldl_cholesterol  , na.rm = TRUE), 
+  triglycerides  = mean(data$triglycerides , na.rm = TRUE),   
   family_history_diabetes = factor("Yes", levels = c("No","Yes")),
   hypertension_history = factor("No", levels = c("No","Yes")),
   cardiovascular_history = factor("Yes", levels = c("No","Yes")),
@@ -481,7 +488,6 @@ newdata$predicted_prob <- predict(model, newdata, type = "response")
 
 #Plot
 
-library(ggplot2)
 
 ggplot(newdata, aes(x = hba1c, y = predicted_prob)) +
   geom_line() +
@@ -502,5 +508,20 @@ Beyond HbA1c values of 8, the predicted probability approaches 1, suggesting tha
 
 
 # Conclusion
-HbA1c levels strongly predict diabetes probability, with a sharp inflection around 6.5%, marking a clinically relevant threshold for risk classification
+
+
+The logistic regression analysis underscores the multifactorial nature of diabetes risk, integrating clinical biomarkers, demographic factors, and lifestyle behaviours. HbA1c emerged as the most powerful predictor, with a sharp inflection around 6.5% marking the transition from low to high probability of diabetes. This threshold is consistent with established diagnostic guidelines and highlights HbA1c’s central role in risk stratification (American Diabetes Association, 2024). Fasting glucose also demonstrated significant predictive value, reinforcing its clinical utility in early detection (International Diabetes Federation, 2025).
+Age, BMI, and family history were positively associated with diabetes, reflecting cumulative biological and genetic influences. These findings align with prior epidemiological studies that emphasize the interplay of age-related metabolic decline, adiposity, and hereditary predisposition (Hu et al., 2020). Conversely, protective factors such as higher physical activity, better diet quality, and elevated HDL cholesterol were linked to reduced risk, underscoring the importance of lifestyle interventions in prevention (Ong et al., 2023; Park et al., 2020). HbA1c levels strongly predict diabetes probability, with a sharp inflection around 6.5%, marking a clinically relevant threshold for risk classification.
+
+
+
+References:
+
+•	American Diabetes Association. (2024). Standards of medical care in diabetes—2024. Diabetes Care, 47(Suppl. 1), S1–S154. https://doi.org/10.2337/dc24-Sint
+•	Dam, N., Verma, A., & Jasrotia, A. S. (2025). Diabetes prevalence and associated factors: Insights from community medicine postgraduate students at RMCHRC, Kanpur. Diabetes Asia Journal, 2(1), 21–24. https://doi.org/10.62996/daj.54042025
+•	Hu, F. B., et al. (2020). Epidemiology of obesity and diabetes. BMJ, 370, m1849. https://doi.org/10.1136/bmj.m1849
+•	International Diabetes Federation. (2025). IDF Diabetes Atlas (11th ed.). Brussels, Belgium: IDF. https://diabetesatlas.org
+•	Ong, K., Stafford, L., McLaughlin, S., et al. (2023). Global, regional, and national burden of diabetes from 1990 to 2021, with projections of prevalence to 2050: A systematic analysis for the Global Burden of Disease Study 2021. The Lancet, 402(10385), 203–234. https://doi.org/10.1016/S0140-6736(23)01352-1 (doi.org in Bing)
+•	Park, J. H., Moon, J. H., Kim, H. J., Kong, M. H., & Oh, Y. H. (2020). Sedentary lifestyle: Overview of updated evidence of potential health risks. Korean Journal of Family Medicine, 41(6), 365–373. https://doi.org/10.4082/kjfm.20.0165
+•	Savvopoulos, S., Hatzikirou, H., & Jelinek, H. F. (2024). Comparative analysis of biomarkers in type 2 diabetes patients with and without comorbidities: Insights into the role of hypertension and cardiovascular disease. Biomarker Insights, 19, 11772719231222111. https://doi.org/10.1177/11772719231222111 (doi.org in Bing)
 
