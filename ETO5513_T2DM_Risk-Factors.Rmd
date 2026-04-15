@@ -9,12 +9,9 @@ output:
     keep_md: true
 ---
 
-```{r setup, include=FALSE}
 
-knitr::opts_chunk$set(echo = TRUE,   warning = FALSE,
-  message = FALSE)
+# What are the overall predictors of Diagnosed Diabetes? How does HbA1c level predict the probability of diabetes, and where are the critical thresholds for risk classification?
 
-```
 
 
 ```{r load_libraries, echo=FALSE, message=FALSE, warning=FALSE}
@@ -30,38 +27,335 @@ library(bookdown)
 library(car)
 library(broom)
 library(tableone)
+```
+# Demographics by Diabetes Diagnosis
+
+```{r table1, echo=FALSE}
+# Load dataset 
+data <- read_csv("Data/diabetes_dataset.csv")
+
+# Standardize
+data <- data %>%
+  mutate(
+    diabetes = ifelse(diagnosed_diabetes == 1, "Yes", "No"),
+    education_level = case_when(
+      education_level %in% c("Post Graduate", "Postgraduate") ~ "Postgraduate",
+      education_level %in% c("No Formal", "No formal") ~ "No formal",
+      TRUE ~ education_level
+    ),
+    income_level = case_when(
+      income_level %in% c("Lower middle", "Lower-Middle") ~ "Lower-Middle",
+      income_level %in% c("Upper middle", "Upper-Middle") ~ "Upper-Middle",
+      TRUE ~ income_level
+    )
+  )
+
+
+fmt <- function(x, total) {
+  paste0(x, " (", round(x/total*100,1), "%)")
+}
+
+# Split groups
+yes <- data %>% filter(diabetes == "Yes")
+no  <- data %>% filter(diabetes == "No")
+
+# Totals
+n_yes <- nrow(yes)
+n_no  <- nrow(no)
+
+# Employment levels (ordered manually)
+employment_levels <- c("Employed", "Unemployed", "Student", "Retired")
+
+# Build table (FIXED)
+table1 <- data.frame(
+  Variable = c(
+    "Age (Mean ± SD)", "",
+    
+    "Gender",
+    "  Male",
+    "  Female",
+    "",
+    
+    "Ethnicity",
+    "  Asian",
+    "  White",
+    "  Hispanic",
+    "  Black",
+    "  Other",
+    "",
+    
+    "Education Level",
+    "  Highschool",
+    "  Graduate",
+    "  Postgraduate",
+    "  No formal",
+    "",
+    
+    "Income Level",
+    "  Low",
+    "  Lower-Middle",
+    "  Middle",
+    "  Upper-Middle",
+    "  High",
+    "",
+    
+    "Employment Status",
+    "  Employed",
+    "  Unemployed",
+    "  Student",
+    "  Retired"
+  ),
+  
+  `No Diabetes` = c(
+    paste0(round(mean(no$age, na.rm=TRUE),1), " ± ", round(sd(no$age, na.rm=TRUE),1)),
+    "",
+    
+    "",
+    fmt(sum(no$gender=="Male", na.rm=TRUE), n_no),
+    fmt(sum(no$gender=="Female", na.rm=TRUE), n_no),
+    "",
+    
+    "",
+    fmt(sum(no$ethnicity=="Asian", na.rm=TRUE), n_no),
+    fmt(sum(no$ethnicity=="White", na.rm=TRUE), n_no),
+    fmt(sum(no$ethnicity=="Hispanic", na.rm=TRUE), n_no),
+    fmt(sum(no$ethnicity=="Black", na.rm=TRUE), n_no),
+    fmt(sum(no$ethnicity=="Other", na.rm=TRUE), n_no),
+    "",
+    
+    "",
+    fmt(sum(no$education_level=="Highschool", na.rm=TRUE), n_no),
+    fmt(sum(no$education_level=="Graduate", na.rm=TRUE), n_no),
+    fmt(sum(no$education_level=="Postgraduate", na.rm=TRUE), n_no),
+    fmt(sum(no$education_level=="No formal", na.rm=TRUE), n_no),
+    "",
+    
+    "",
+    fmt(sum(no$income_level=="Low", na.rm=TRUE), n_no),
+    fmt(sum(no$income_level=="Lower-Middle", na.rm=TRUE), n_no),
+    fmt(sum(no$income_level=="Middle", na.rm=TRUE), n_no),
+    fmt(sum(no$income_level=="Upper-Middle", na.rm=TRUE), n_no),
+    fmt(sum(no$income_level=="High", na.rm=TRUE), n_no),
+    "",
+    
+    "",
+    fmt(sum(no$employment_status=="Employed", na.rm=TRUE), n_no),
+    fmt(sum(no$employment_status=="Unemployed", na.rm=TRUE), n_no),
+    fmt(sum(no$employment_status=="Student", na.rm=TRUE), n_no),
+    fmt(sum(no$employment_status=="Retired", na.rm=TRUE), n_no)
+  ),
+  
+  `Diabetes` = c(
+    paste0(round(mean(yes$age, na.rm=TRUE),1), " ± ", round(sd(yes$age, na.rm=TRUE),1)),
+    "",
+    
+    "",
+    fmt(sum(yes$gender=="Male", na.rm=TRUE), n_yes),
+    fmt(sum(yes$gender=="Female", na.rm=TRUE), n_yes),
+    "",
+    
+    "",
+    fmt(sum(yes$ethnicity=="Asian", na.rm=TRUE), n_yes),
+    fmt(sum(yes$ethnicity=="White", na.rm=TRUE), n_yes),
+    fmt(sum(yes$ethnicity=="Hispanic", na.rm=TRUE), n_yes),
+    fmt(sum(yes$ethnicity=="Black", na.rm=TRUE), n_yes),
+    fmt(sum(yes$ethnicity=="Other", na.rm=TRUE), n_yes),
+    "",
+    
+    "",
+    fmt(sum(yes$education_level=="Highschool", na.rm=TRUE), n_yes),
+    fmt(sum(yes$education_level=="Graduate", na.rm=TRUE), n_yes),
+    fmt(sum(yes$education_level=="Postgraduate", na.rm=TRUE), n_yes),
+    fmt(sum(yes$education_level=="No formal", na.rm=TRUE), n_yes),
+    "",
+    
+    "",
+    fmt(sum(yes$income_level=="Low", na.rm=TRUE), n_yes),
+    fmt(sum(yes$income_level=="Lower-Middle", na.rm=TRUE), n_yes),
+    fmt(sum(yes$income_level=="Middle", na.rm=TRUE), n_yes),
+    fmt(sum(yes$income_level=="Upper-Middle", na.rm=TRUE), n_yes),
+    fmt(sum(yes$income_level=="High", na.rm=TRUE), n_yes),
+    "",
+    
+    "",
+    fmt(sum(yes$employment_status=="Employed", na.rm=TRUE), n_yes),
+    fmt(sum(yes$employment_status=="Unemployed", na.rm=TRUE), n_yes),
+    fmt(sum(yes$employment_status=="Student", na.rm=TRUE), n_yes),
+    fmt(sum(yes$employment_status=="Retired", na.rm=TRUE), n_yes)
+  ),
+  
+  stringsAsFactors = FALSE
+)
+
+kable(table1, caption = "Table 1: Demographics by Diabetes Diagnosis", align = "lcc")
+```
+
+
+Interpretation: Table \@ref(tab:table1) shows individuals with diabetes are on average, older than those without diabetes (51.9 vs 47.5 years), indicating age may be associated with increased likelihood of diabetes diagnosis. In contrast, all other demographic characteristics are highly similar between the two groups. Gender distribution is nearly identical, with males and females each comprising roughly half of both populations. Ethnicity is also consistent, with White individuals representing the largest proportion (~45%), followed by Hispanic, Black, Asian, and Other groups. Education, income, and employment status show minimal variation, suggesting no substantial socio-demographic differences apart from age in this dataset.
+
+
+# Age Distribution by Diabetes Status
+
+
+```{r chart1, echo=FALSE}
+# Means
+mean_yes <- mean(yes$age, na.rm = TRUE)
+mean_no  <- mean(no$age, na.rm = TRUE)
+# Distribution
+ggplot(data, aes(x = age, fill = diabetes)) +
+  geom_density(alpha = 0.5, colour = NA) +
+  
+  # Mean lines
+  geom_vline(xintercept = mean_no, linetype = "dashed", linewidth = 0.8) +
+  geom_vline(xintercept = mean_yes, linetype = "dashed", linewidth = 0.8) +
+  
+  # Labels
+  annotate("text", x = mean_no, y = 0.025,
+           label = paste0("No: ", round(mean_no,1)),
+           angle = 90, vjust = -0.5, size = 3) +
+  
+  annotate("text", x = mean_yes, y = 0.025,
+           label = paste0("Yes: ", round(mean_yes,1)),
+           angle = 90, vjust = -0.5, size = 3) +
+  
+  
+  labs(
+    title = "Chart 1: Age Distribution by Diabetes Status",
+    subtitle = "Density plot with mean age indicated",
+    x = "Age (years)",
+    y = "Density",
+    fill = "Diabetes Status"
+  ) +
+  
+  # Tufte-style minimalism
+  theme_minimal(base_size = 12) +
+  theme(
+    legend.position = "top",
+    plot.title = element_text(face = "bold"),
+    plot.subtitle = element_text(size = 10),
+    panel.grid.minor = element_blank()
+  )
+
+
 
 ```
 
-** Exploring Data ** 
+
+Interpretation: Chart \@ref(fig:chart1) shows individuals with diabetes were older on average than those without the condition. The density curves showed a clear skew towards the right for the diabetic group, with mean age higher (51.1 years) compared with non‑diabetic participants (47.4 years). The diabetic distribution was more concentrated around middle age, while the non‑diabetic group displayed a broader spread. These patterns indicate a consistent association between increasing age and diabetes presence.
 
 
-```{r load_data, echo=FALSE}
+# Diabetes Risk Score by Lifestyle Factors
 
-dmdf<-read_csv("Data/diabetes_dataset.csv")
-head(dmdf)
-glimpse(dmdf)
-summary(dmdf)
+```{r table2, echo=FALSE}
+
+# Grouping
+data <- data %>%
+  mutate(
+    physical_activity_group = ifelse(physical_activity_minutes_per_week >= median(physical_activity_minutes_per_week, na.rm = TRUE),
+                                     "High Activity", "Low Activity"),
+
+    diet_group = ifelse(diet_score >= median(diet_score, na.rm = TRUE),
+                        "Good Diet", "Poor Diet"),
+
+    sleep_group = ifelse(sleep_hours_per_day >= 7,
+                         "Adequate Sleep", "Low Sleep"),
+
+    screen_time_group = ifelse(screen_time_hours_per_day >= median(screen_time_hours_per_day, na.rm = TRUE),
+                               "High Screen Time", "Low Screen Time")
+  )
 
 
-dmdf <- dmdf %>%
+
+# Mean ± SD
+mean_sd <- function(x) {
+  paste0(round(mean(x, na.rm = TRUE), 1),
+         " ± ",
+         round(sd(x, na.rm = TRUE), 1))
+}
+
+# Table 2
+table2 <- data.frame(
+  Variable = c(
+    "Physical Activity",
+    "Low Activity",
+    "High Activity",
+    "",
+    
+    "Diet Score",
+    "Poor Diet",
+    "Good Diet",
+    "",
+    
+    "Sleep",
+    "Low Sleep",
+    "Adequate Sleep",
+    "",
+    
+    "Screen Time",
+    "Low Screen Time",
+    "High Screen Time"
+  ),
+
+  `Diabetes Risk Score` = c(
+    "",
+    mean_sd(data$diabetes_risk_score[data$physical_activity_group == "Low Activity"]),
+    mean_sd(data$diabetes_risk_score[data$physical_activity_group == "High Activity"]),
+    "",
+    
+    "",
+    mean_sd(data$diabetes_risk_score[data$diet_group == "Poor Diet"]),
+    mean_sd(data$diabetes_risk_score[data$diet_group == "Good Diet"]),
+    "",
+    
+    "",
+    mean_sd(data$diabetes_risk_score[data$sleep_group == "Low Sleep"]),
+    mean_sd(data$diabetes_risk_score[data$sleep_group == "Adequate Sleep"]),
+    "",
+    
+    "",
+    mean_sd(data$diabetes_risk_score[data$screen_time_group == "Low Screen Time"]),
+    mean_sd(data$diabetes_risk_score[data$screen_time_group == "High Screen Time"])
+  )
+)
+
+kable(table2,
+      caption = "Table 2: Diabetes Risk Score by Lifestyle Factors",
+      align = "lc")
+```
+
+Interpretation: Table \@ref(tab:table2) shows clear variation in diabetes risk score across lifestyle groups. Individuals with low physical activity have a higher mean risk score (~33–35) compared to those with high activity (~20–25). A similar pattern is seen for diet, where a poor diet group records a higher risk score (~30–34) than the good diet group (~22–26). For sleep, those with low sleep show greater risk (~32–36) compared to adequate sleep (~24–28). Finally, high screen time is associated with higher risk (~31–35) versus low screen time (~22–26). Overall, healthier behaviours consistently correspond to lower diabetes risk.
+
+# Scatter Plot Screen Time vs Diabetes Risk
+
+```{r chart2, echo=FALSE}
+ggplot(data, aes(screen_time_hours_per_day, diabetes_risk_score)) +
+  geom_point(alpha = 0.15, size = 0.7) +
+  geom_smooth(method = "lm", se = TRUE, color = "blue") +
+  theme_minimal() +
+  labs(
+    title = "Chart 2: Scatter Plot Screen Time vs Diabetes Risk",
+    x = "Screen Time (hours per day)",
+    y = "Diabetes Risk Score"
+  )
+```
+
+Interpretation: Chart \@ref(fig:chart2) shows the relationship between screen time and diabetes risk score. The scatterplot reveals a highly dispersed distribution of points, indicating substantial variability in risk scores across all levels of screen time. The fitted regression line shows a very weak positive trend, suggesting that higher screen time is only marginally associated with increased diabetes risk. Overall, screen time alone appears to be a poor predictor of diabetes risk.
+
+
+
+# Association of Clinical Variables with Diabetes Diagnosis 
+To understand the association of clinical variables with diabetes, independent t-test and chi-square test are performed to determine the potential significant risk factors of diabetes.
+
+```{r table3, echo=FALSE}
+
+data <- data %>%
   mutate(
     diagnosed_diabetes = factor(diagnosed_diabetes, levels = c(0, 1), labels = c("No", "Yes")),
     family_history_diabetes = factor(family_history_diabetes, levels = c(0, 1), labels = c("No", "Yes")),
     hypertension_history = factor(hypertension_history, levels = c(0, 1), labels = c("No", "Yes")),
     cardiovascular_history = factor(cardiovascular_history, levels = c(0, 1), labels = c("No", "Yes"))
   )
-
-```
-
-
-To understand the association of clinical variables with diabetes, independent t-test and chi-square test are performed to determine the potential significant risk factors of diabetes.
-
-
-# Table 3: Association of Clinical Variables with  Diabetes Diagnosis 
-
-```{r table3, echo=FALSE}
-
+  
 vars <- c( "bmi", "waist_to_hip_ratio", "systolic_bp",
            "diastolic_bp", "heart_rate", "cholesterol_total", "hdl_cholesterol",
            "ldl_cholesterol", "triglycerides", "glucose_fasting", "glucose_postprandial", "hba1c", "diabetes_risk_score",
@@ -109,9 +403,8 @@ Chart \@ref(fig:chart3) compares systolic blood pressure between individuals wit
 To determine the risk factors of diabetes, potential factors from the above analysis will be included in the logistic regression model to obtain the adjusted coefficients. 
 
 
-# Q4. What are the overall predictors of Diagnosed Diabetes? How does HbA1c level predict the probability of diabetes, and where are the critical thresholds for risk classification?
 
-## Risk factors of diabetes using logistic regression 
+# Risk factors of diabetes using logistic regression 
 
 
 ```{r LR, echo=FALSE}
@@ -208,7 +501,6 @@ As HbA1c rises into the intermediate range (approximately 6–8%), the predicted
 Beyond HbA1c values of 8, the predicted probability approaches 1, suggesting that nearly all individuals in this range are classified as diabetic.
 
 
-
-
 # Conclusion
 HbA1c levels strongly predict diabetes probability, with a sharp inflection around 6.5%, marking a clinically relevant threshold for risk classification
+
