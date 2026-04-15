@@ -109,9 +109,9 @@ Chart \@ref(fig:chart3) compares systolic blood pressure between individuals wit
 To determine the risk factors of diabetes, potential factors from the above analysis will be included in the logistic regression model to obtain the adjusted coefficients. 
 
 
-Q4. What are the overall predictors of Diagnosed Diabetes? How does HbA1c level predict the probability of diabetes, and where are the critical thresholds for risk classification?
+# Q4. What are the overall predictors of Diagnosed Diabetes? How does HbA1c level predict the probability of diabetes, and where are the critical thresholds for risk classification?
 
-# Table 4. Risk factors of diabetes using logistic regression 
+## Risk factors of diabetes using logistic regression 
 
 
 ```{r LR, echo=FALSE}
@@ -133,20 +133,23 @@ table_or <- tidy(model) %>%
     CI_high = exp(estimate + 1.96 * std.error)
   ) %>%
   select(term, OR, CI_low, CI_high, p.value)
+```
 
-table_or
+
+```{r table4, echo=FALSE}
+knitr::kable(table_or,  caption = "Association of risk factors with diabetes using Logistic Regression")
 
 ```
 
 
 ## Interpretation 
 
-The logistic regression identified several significant predictors of diagnosed diabetes. Age (OR=1.01, p<0.001) and BMI (OR=1.01, p=0.027) were positively associated with diabetes, indicating increased risk with higher values. Family history showed a strong effect (OR=1.50, p<0.001), highlighting genetic predisposition. HbA1c was the strongest predictor (OR=30.7, p<0.001), followed by fasting glucose (OR=1.02, p<0.001), reflecting their clinical importance. Higher physical activity (OR<1, p<0.001) and better diet score (borderline significance) were protective. HDL cholesterol was also inversely associated (p=0.029). Other variables, including hypertension, cardiovascular history, and blood pressure, were not statistically significant after adjustment.
+The logistic regression in Table \@ref(tab:table4) identified several significant predictors of diagnosed diabetes. Age (OR=1.01, p<0.001) and BMI (OR=1.01, p=0.027) were positively associated with diabetes, indicating increased risk with higher values. Family history showed a strong effect (OR=1.50, p<0.001), highlighting genetic predisposition. HbA1c was the strongest predictor (OR=30.7, p<0.001), followed by fasting glucose (OR=1.02, p<0.001), reflecting their clinical importance. Higher physical activity (OR<1, p<0.001) and better diet score (borderline significance) were protective. HDL cholesterol was also inversely associated (p=0.029). Other variables, including hypertension, cardiovascular history, and blood pressure, were not statistically significant after adjustment.
 
 
 
 
-# Chart 4.  Predicted Probability of Diabetes (y) by HbA1c (x)
+## Predicted Probability of Diabetes (y) by HbA1c (x)
 
 ```{r pred_prob, echo=FALSE}
 
@@ -196,9 +199,6 @@ ggplot(newdata, aes(x = hba1c, y = predicted_prob)) +
   ) +
   theme_minimal()
 
-
-
-
 ```
 
 ## Interpretation:
@@ -210,5 +210,5 @@ Beyond HbA1c values of 8, the predicted probability approaches 1, suggesting tha
 
 
 
-## Conclusion
+# Conclusion
 HbA1c levels strongly predict diabetes probability, with a sharp inflection around 6.5%, marking a clinically relevant threshold for risk classification
