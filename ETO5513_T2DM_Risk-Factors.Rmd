@@ -17,7 +17,7 @@ Emerging evidence also suggests that sedentary behaviours, such as prolonged scr
 This study aims to: (1) describe the demographic profile of individuals with and without diabetes; (2) assess the association between lifestyle factors and diabetes; (3) evaluate the relationship between clinical variables and diabetes; and (4) identify the overall key risk factors for diabetes using logistic regression (5) identify critical thresholds for risk classification.
 
 
-
+# Analysis sections
 
 
 
@@ -35,7 +35,7 @@ library(car)
 library(broom)
 library(tableone)
 ```
-# Demographics by Diabetes Diagnosis
+## Demographics by Diabetes Diagnosis
 
 ```{r table1, echo=FALSE}
 # Load dataset 
@@ -201,10 +201,10 @@ kable(table1, caption = "Table 1: Demographics by Diabetes Diagnosis", align = "
 Interpretation: Table \@ref(tab:table1) shows individuals with diabetes are on average, older than those without diabetes (51.9 vs 47.5 years), indicating age may be associated with increased likelihood of diabetes diagnosis. In contrast, all other demographic characteristics are highly similar between the two groups. Gender distribution is nearly identical, with males and females each comprising roughly half of both populations. Ethnicity is also consistent, with White individuals representing the largest proportion (~45%), followed by Hispanic, Black, Asian, and Other groups. Education, income, and employment status show minimal variation, suggesting no substantial socio-demographic differences apart from age in this dataset.
 
 
-# Age Distribution by Diabetes Status
+## Age Distribution by Diabetes Status
 
 
-```{r chart1, echo=FALSE}
+```{r chart1, echo=FALSE, fig.cap="Age Distribution by Diabetes Status"}
 # Means
 mean_yes <- mean(yes$age, na.rm = TRUE)
 mean_no  <- mean(no$age, na.rm = TRUE)
@@ -227,7 +227,7 @@ ggplot(data, aes(x = age, fill = diabetes)) +
   
   
   labs(
-    title = "Chart 1: Age Distribution by Diabetes Status",
+    title = "Age Distribution by Diabetes Status",
     subtitle = "Density plot with mean age indicated",
     x = "Age (years)",
     y = "Density",
@@ -251,7 +251,7 @@ ggplot(data, aes(x = age, fill = diabetes)) +
 Interpretation: Chart \@ref(fig:chart1) shows individuals with diabetes were older on average than those without the condition. The density curves showed a clear skew towards the right for the diabetic group, with mean age higher (51.1 years) compared with non‑diabetic participants (47.4 years). The diabetic distribution was more concentrated around middle age, while the non‑diabetic group displayed a broader spread. These patterns indicate a consistent association between increasing age and diabetes presence.
 
 
-# Diabetes Risk Score by Lifestyle Factors
+## Diabetes Risk Score by Lifestyle Factors
 
 ```{r table2, echo=FALSE}
 
@@ -332,15 +332,15 @@ kable(table2,
 
 Interpretation: Table \@ref(tab:table2) shows clear variation in diabetes risk score across lifestyle groups. Individuals with low physical activity have a higher mean risk score (~33–35) compared to those with high activity (~20–25). A similar pattern is seen for diet, where a poor diet group records a higher risk score (~30–34) than the good diet group (~22–26). For sleep, those with low sleep show greater risk (~32–36) compared to adequate sleep (~24–28). Finally, high screen time is associated with higher risk (~31–35) versus low screen time (~22–26). Overall, healthier behaviours consistently correspond to lower diabetes risk.
 
-# Scatter Plot Screen Time vs Diabetes Risk
+## Scatter Plot Screen Time vs Diabetes Risk
 
-```{r chart2, echo=FALSE}
+```{r chart2, echo=FALSE, fig.cap="Scatter Plot Screen Time vs Diabetes Risk"}
 ggplot(data, aes(screen_time_hours_per_day, diabetes_risk_score)) +
   geom_point(alpha = 0.15, size = 0.7) +
   geom_smooth(method = "lm", se = TRUE, color = "blue") +
   theme_minimal() +
   labs(
-    title = "Chart 2: Scatter Plot Screen Time vs Diabetes Risk",
+    title = "Scatter Plot Screen Time vs Diabetes Risk",
     x = "Screen Time (hours per day)",
     y = "Diabetes Risk Score"
   )
@@ -350,7 +350,7 @@ Interpretation: Chart \@ref(fig:chart2) shows the relationship between screen ti
 
 
 
-# Association of Clinical Variables with Diabetes Diagnosis 
+## Association of Clinical Variables with Diabetes Diagnosis 
 To understand the association of clinical variables with diabetes, independent t-test and chi-square test are performed to determine the potential significant risk factors of diabetes.
 
 ```{r table3, echo=FALSE}
@@ -375,20 +375,20 @@ table_three <- CreateTableOne(vars = vars,
 
 knitr::kable(
   print(table_three, showAllLevels = TRUE),
-  caption = "Baseline Characteristics of patients"
+  caption = "Baseline Clinical Parameters of Patients"
 )
 
 
 
 ```
 
-## Interpretation:
+Interpretation:
 
 Table \@ref(tab:table3) reveals the differences in clinical parameters between individuals with and without diagnosed diabetes. Among 100,000 participants, 40,002 were non-diabetic and 59,998 diabetic. Those with diabetes showed higher BMI, waist-to-hip ratio, blood pressure, heart rate, and adverse lipid profiles, including elevated total cholesterol, LDL, and triglycerides, alongside lower HDL. Glucose measures were also higher, with fasting, postprandial, and HbA1c values well above non-diabetic levels. Nearly all diagnosed cases were Type 2 diabetes (99.6%), while most non-diabetics were classified as pre-diabetes. All differences were statistically significant (p < 0.001).
 
 
 
-# Chart 3. Boxplot of Systolic BP vs Diabetes Diagnosis
+## Boxplot of Systolic BP vs Diabetes Diagnosis
 
 ```{r chart3, echo=FALSE, fig.cap="Boxplot of Systolic BP by Diabetes Diagnosis"}
 
@@ -401,7 +401,7 @@ ggplot(data, aes(x = diagnosed_diabetes, y = systolic_bp, fill = diagnosed_diabe
   theme(legend.position = "none")
 ```
 
-## Interpretation:
+Interpretation:
 
 
 Chart \@ref(fig:chart3) compares systolic blood pressure between individuals with and without diabetes. The median systolic BP is slightly higher among those diagnosed with diabetes, with a broader distribution and more outliers.
@@ -411,7 +411,7 @@ To determine the risk factors of diabetes, potential factors from the above anal
 
 
 
-# Risk factors of diabetes using logistic regression 
+## Risk factors of diabetes using logistic regression 
 
 
 ```{r LR, echo=FALSE}
@@ -442,7 +442,7 @@ knitr::kable(table_or,  caption = "Association of risk factors with diabetes usi
 ```
 
 
-## Interpretation 
+Interpretation 
 
 The logistic regression in Table \@ref(tab:table4) identified several significant predictors of diagnosed diabetes. Age (OR=1.01, p<0.001) and BMI (OR=1.01, p=0.027) were positively associated with diabetes, indicating increased risk with higher values. Family history showed a strong effect (OR=1.50, p<0.001), highlighting genetic predisposition. HbA1c was the strongest predictor (OR=30.7, p<0.001), followed by fasting glucose (OR=1.02, p<0.001), reflecting their clinical importance. Higher physical activity (OR<1, p<0.001) and better diet score (borderline significance) were protective. HDL cholesterol was also inversely associated (p=0.029). Other variables, including hypertension, cardiovascular history, and blood pressure, were not statistically significant after adjustment.
 
@@ -500,7 +500,7 @@ ggplot(newdata, aes(x = hba1c, y = predicted_prob)) +
 
 ```
 
-## Interpretation:
+Interpretation:
 
 Chart \@ref(fig:chart4) shows that at low HbA1c values (around 4–5.5%), the predicted probability of diabetes is near zero, indicating minimal risk.
 As HbA1c rises into the intermediate range (approximately 6–8%), the predicted probability increases sharply, indicating that HbA1c ≈ 6.5% as a critical threshold where individuals move from low to high risk. 
@@ -515,13 +515,25 @@ Age, BMI, and family history were positively associated with diabetes, reflectin
 
 
 
-References:
+# References
 
 •	American Diabetes Association. (2024). Standards of medical care in diabetes—2024. Diabetes Care, 47(Suppl. 1), S1–S154. https://doi.org/10.2337/dc24-Sint
+
+
 •	Dam, N., Verma, A., & Jasrotia, A. S. (2025). Diabetes prevalence and associated factors: Insights from community medicine postgraduate students at RMCHRC, Kanpur. Diabetes Asia Journal, 2(1), 21–24. https://doi.org/10.62996/daj.54042025
+
+
 •	Hu, F. B., et al. (2020). Epidemiology of obesity and diabetes. BMJ, 370, m1849. https://doi.org/10.1136/bmj.m1849
+
+
 •	International Diabetes Federation. (2025). IDF Diabetes Atlas (11th ed.). Brussels, Belgium: IDF. https://diabetesatlas.org
+
+
 •	Ong, K., Stafford, L., McLaughlin, S., et al. (2023). Global, regional, and national burden of diabetes from 1990 to 2021, with projections of prevalence to 2050: A systematic analysis for the Global Burden of Disease Study 2021. The Lancet, 402(10385), 203–234. https://doi.org/10.1016/S0140-6736(23)01352-1 (doi.org in Bing)
+
+
 •	Park, J. H., Moon, J. H., Kim, H. J., Kong, M. H., & Oh, Y. H. (2020). Sedentary lifestyle: Overview of updated evidence of potential health risks. Korean Journal of Family Medicine, 41(6), 365–373. https://doi.org/10.4082/kjfm.20.0165
+
+
 •	Savvopoulos, S., Hatzikirou, H., & Jelinek, H. F. (2024). Comparative analysis of biomarkers in type 2 diabetes patients with and without comorbidities: Insights into the role of hypertension and cardiovascular disease. Biomarker Insights, 19, 11772719231222111. https://doi.org/10.1177/11772719231222111 (doi.org in Bing)
 
