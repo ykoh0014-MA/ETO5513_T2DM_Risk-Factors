@@ -70,10 +70,10 @@ no  <- data %>% filter(diabetes == "No")
 n_yes <- nrow(yes)
 n_no  <- nrow(no)
 
-# Employment levels (ordered manually)
+# Employment levels
 employment_levels <- c("Employed", "Unemployed", "Student", "Retired")
 
-# Build table (FIXED)
+# Table
 table1 <- data.frame(
   Variable = c(
     "Age (Mean ± SD)", "",
@@ -198,7 +198,7 @@ kable(table1, caption = "Table 1: Demographics by Diabetes Diagnosis", align = "
 ```
 
 
-Interpretation: Table \@ref(tab:table1) shows individuals with diabetes are on average, older than those without diabetes (51.9 vs 47.5 years), indicating age may be associated with increased likelihood of diabetes diagnosis. In contrast, all other demographic characteristics are highly similar between the two groups. Gender distribution is nearly identical, with males and females each comprising roughly half of both populations. Ethnicity is also consistent, with White individuals representing the largest proportion (~45%), followed by Hispanic, Black, Asian, and Other groups. Education, income, and employment status show minimal variation, suggesting no substantial socio-demographic differences apart from age in this dataset.
+Interpretation: Table \@ref(tab:table1) indicates that individuals with diabetes are, on average, older than those without (51.9 vs 47.5 years), suggesting age is associated with a higher likelihood of diagnosis. This aligns with existing evidence linking increasing age to greater diabetes risk due to metabolic and physiological changes over time (International Diabetes Federation, 2025; Hu et al., 2020). In contrast, other demographic characteristics including gender, ethnicity, education, income, and employment show minimal variation between groups.
 
 
 ## Age Distribution by Diabetes Status
@@ -248,7 +248,7 @@ ggplot(data, aes(x = age, fill = diabetes)) +
 ```
 
 
-Interpretation: Chart \@ref(fig:chart1) shows individuals with diabetes were older on average than those without the condition. The density curves showed a clear skew towards the right for the diabetic group, with mean age higher (51.1 years) compared with non‑diabetic participants (47.4 years). The diabetic distribution was more concentrated around middle age, while the non‑diabetic group displayed a broader spread. These patterns indicate a consistent association between increasing age and diabetes presence.
+Interpretation: Chart \@ref(fig:chart1) reinforces the pattern observed in Table @ref(tab:table1), with the diabetic group displaying a right-skewed age distribution and a higher mean (51.1 years) age compared to non-diabetic individuals (47.4 years). This further supports the role of age as a consistent risk factor (Hu et al., 2020). The narrower concentration around middle age among diabetic individuals also suggests a critical period where risk becomes more pronounced, potentially reflecting cumulative exposure to metabolic and lifestyle risk factors over time.
 
 
 ## Diabetes Risk Score by Lifestyle Factors
@@ -330,7 +330,8 @@ kable(table2,
       align = "lc")
 ```
 
-Interpretation: Table \@ref(tab:table2) shows clear variation in diabetes risk score across lifestyle groups. Individuals with low physical activity have a higher mean risk score (~33–35) compared to those with high activity (~20–25). A similar pattern is seen for diet, where a poor diet group records a higher risk score (~30–34) than the good diet group (~22–26). For sleep, those with low sleep show greater risk (~32–36) compared to adequate sleep (~24–28). Finally, high screen time is associated with higher risk (~31–35) versus low screen time (~22–26). Overall, healthier behaviours consistently correspond to lower diabetes risk.
+Interpretation: Table \@ref(tab:table2) shows clear variation in diabetes risk score across lifestyle groups. Individuals with low physical activity have a higher mean risk score (~33–35) compared to those with high activity (~20–25). A similar pattern is seen for diet, where a poor diet group records a higher risk score (~30–34) than the good diet group (~22–26). For sleep, those with low sleep show greater risk (~32–36) compared to adequate sleep (~24–28). Finally, high screen time is associated with higher risk (~31–35) versus low screen time (~22–26). Overall, healthier behaviours consistently correspond to lower diabetes risk, consistent with prior research on behavioural risk factors (Ong et al., 2023; Park et al., 2020). 
+
 
 ## Scatter Plot Screen Time vs Diabetes Risk
 
@@ -346,7 +347,7 @@ ggplot(data, aes(screen_time_hours_per_day, diabetes_risk_score)) +
   )
 ```
 
-Interpretation: Chart \@ref(fig:chart2) shows the relationship between screen time and diabetes risk score. The scatterplot reveals a highly dispersed distribution of points, indicating substantial variability in risk scores across all levels of screen time. The fitted regression line shows a very weak positive trend, suggesting that higher screen time is only marginally associated with increased diabetes risk. Overall, screen time alone appears to be a poor predictor of diabetes risk.
+Interpretation:Chart \@ref(fig:chart2) shows that screen time alone has only a weak positive association with diabetes risk, suggesting it is not a strong independent predictor despite its broader behavioural relevance (Park et al., 2020). This indicates that screen time alone doesn’t directly influence risk of diabetes.
 
 
 
@@ -510,8 +511,7 @@ Beyond HbA1c values of 8, the predicted probability approaches 1, suggesting tha
 # Conclusion
 
 
-The logistic regression analysis underscores the multifactorial nature of diabetes risk, integrating clinical biomarkers, demographic factors, and lifestyle behaviours. HbA1c emerged as the most powerful predictor, with a sharp inflection around 6.5% marking the transition from low to high probability of diabetes. This threshold is consistent with established diagnostic guidelines and highlights HbA1c’s central role in risk stratification (American Diabetes Association, 2024). Fasting glucose also demonstrated significant predictive value, reinforcing its clinical utility in early detection (International Diabetes Federation, 2025).
-Age, BMI, and family history were positively associated with diabetes, reflecting cumulative biological and genetic influences. These findings align with prior epidemiological studies that emphasize the interplay of age-related metabolic decline, adiposity, and hereditary predisposition (Hu et al., 2020). Conversely, protective factors such as higher physical activity, better diet quality, and elevated HDL cholesterol were linked to reduced risk, underscoring the importance of lifestyle interventions in prevention (Ong et al., 2023; Park et al., 2020). HbA1c levels strongly predict diabetes probability, with a sharp inflection around 6.5%, marking a clinically relevant threshold for risk classification.
+Overall, the findings indicate that age is the primary demographic factor associated with diabetes, while other socio-demographic characteristics show minimal differences between groups, consistent with evidence linking ageing to increased metabolic risk (World Health Organization, 2023). In contrast, lifestyle behaviours demonstrate a clearer relationship with diabetes risk, with low physical activity, poor diet, inadequate sleep, and higher screen time linked to elevated risk scores. However, screen time alone appears to be a weak independent predictor (Ekelund et al., 2019). These results suggest that while demographic factors provide limited differentiation, modifiable lifestyle behaviours play a more meaningful role in shaping diabetes risk. The logistic regression analysis underscores the multifactorial nature of diabetes risk, integrating clinical biomarkers, demographic factors, and lifestyle behaviours. HbA1c emerged as the most powerful predictor, with a sharp inflection around 6.5% marking the transition from low to high probability of diabetes. This threshold is consistent with established diagnostic guidelines and highlights HbA1c’s central role in risk stratification (American Diabetes Association, 2024). Fasting glucose also demonstrated significant predictive value, reinforcing its clinical utility in early detection (International Diabetes Federation, 2025). Age, BMI, and family history were positively associated with diabetes, reflecting cumulative biological and genetic influences. These findings align with prior epidemiological studies that emphasize the interplay of age-related metabolic decline, adiposity, and hereditary predisposition (Hu et al., 2020). Conversely, protective factors such as higher physical activity, better diet quality, and elevated HDL cholesterol were linked to reduced risk, underscoring the importance of lifestyle interventions in prevention (Ong et al., 2023; Park et al., 2020). HbA1c levels strongly predict diabetes probability, with a sharp inflection around 6.5%, marking a clinically relevant threshold for risk classification.
 
 
 
@@ -522,6 +522,7 @@ Age, BMI, and family history were positively associated with diabetes, reflectin
 
 •	Dam, N., Verma, A., & Jasrotia, A. S. (2025). Diabetes prevalence and associated factors: Insights from community medicine postgraduate students at RMCHRC, Kanpur. Diabetes Asia Journal, 2(1), 21–24. https://doi.org/10.62996/daj.54042025
 
+• Ekelund, U., Tarp, J., Steene-Johannessen, J., Hansen, B. H., Jefferis, B., Fagerland, M. W., Whincup, P., Diaz, K. M., Hooker, S. P., Chernofsky, A., Larson, M. G., Spartano, N., Vasan, R. S., Dohrn, I.-M., Hagströmer, M., Edwardson, C., Yates, T., Shiroma, E., Anderssen, S. A., & Lee, I.-M. (2019). Dose-response associations between accelerometry measured physical activity and sedentary time and all-cause mortality: Systematic review and harmonised meta-analysis. BMJ, 366, l4570. https://doi.org/10.1136/bmj.l4570
 
 •	Hu, F. B., et al. (2020). Epidemiology of obesity and diabetes. BMJ, 370, m1849. https://doi.org/10.1136/bmj.m1849
 
@@ -536,4 +537,6 @@ Age, BMI, and family history were positively associated with diabetes, reflectin
 
 
 •	Savvopoulos, S., Hatzikirou, H., & Jelinek, H. F. (2024). Comparative analysis of biomarkers in type 2 diabetes patients with and without comorbidities: Insights into the role of hypertension and cardiovascular disease. Biomarker Insights, 19, 11772719231222111. https://doi.org/10.1177/11772719231222111 (doi.org in Bing)
+
+• World Health Organization. (2023). Diabetes. https://www.who.int/news-room/fact-sheets/detail/diabetes
 
