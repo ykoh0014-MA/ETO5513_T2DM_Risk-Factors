@@ -516,7 +516,7 @@ Overall, the findings indicate that age is the primary demographic factor associ
 
 The logistic regression analysis reinforced the multifactorial nature of diabetes, integrating biomarkers, demographics, and lifestyle. HbA1c emerged as the most powerful predictor, with a sharp inflection around 6.5% marking the transition from low to high probability of diabetes. This threshold is consistent with established diagnostic guidelines and highlights HbA1c’s central role in risk stratification (American Diabetes Association, 2024). Fasting glucose also demonstrated significant predictive value, reinforcing its clinical utility in early detection (International Diabetes Federation, 2025). 
 
-Age, BMI, and family history were positively associated with diabetes, reflecting some genetic influences. These findings align with prior epidemiological studies that emphasize the interplay of age-related metabolic decline, adiposity, and hereditary predisposition (Hu et al., 2020). Conversely, protective factors such as higher physical activity, better diet quality, and elevated HDL cholesterol were linked to reduced risk, underscoring the importance of lifestyle interventions in prevention (Ong et al., 2023; Park et al., 2020). 
+Age, BMI, and family history were positively associated with diabetes, reflecting some genetic influences. These findings align with prior epidemiological studies that emphasize the interplay of age-related metabolic decline, adiposity, and hereditary predisposition (Ruze R et al., 2023). Conversely, protective factors such as higher physical activity, better diet quality, and elevated HDL cholesterol were linked to reduced risk, underscoring the importance of lifestyle interventions in prevention (Ong et al., 2023; Park et al., 2020). 
 
 
 # References
@@ -524,23 +524,24 @@ Age, BMI, and family history were positively associated with diabetes, reflectin
 •	American Diabetes Association. (2024). Standards of medical care in diabetes—2024. Diabetes Care, 47(Suppl. 1), S1–S154. https://doi.org/10.2337/dc24-Sint
 
 
-•	Dam, N., Verma, A., & Jasrotia, A. S. (2025). Diabetes prevalence and associated factors: Insights from community medicine postgraduate students at RMCHRC, Kanpur. Diabetes Asia Journal, 2(1), 21–24. https://doi.org/10.62996/daj.54042025
+•	Dam, N., Verma, A., & Jasrotia, A. S. (2025). IDF atlas 2025: Global Diabetes Prevalence and Gestational Diabetes Mellitus . Diabetes Asia Journal, 2(1), 21–24. https://doi.org/10.62996/daj.54042025
 
 • Ekelund, U., Tarp, J., Steene-Johannessen, J., Hansen, B. H., Jefferis, B., Fagerland, M. W., Whincup, P., Diaz, K. M., Hooker, S. P., Chernofsky, A., Larson, M. G., Spartano, N., Vasan, R. S., Dohrn, I.-M., Hagströmer, M., Edwardson, C., Yates, T., Shiroma, E., Anderssen, S. A., & Lee, I.-M. (2019). Dose-response associations between accelerometry measured physical activity and sedentary time and all-cause mortality: Systematic review and harmonised meta-analysis. BMJ, 366, l4570. https://doi.org/10.1136/bmj.l4570
 
-•	Hu, F. B., et al. (2020). Epidemiology of obesity and diabetes. BMJ, 370, m1849. https://doi.org/10.1136/bmj.m1849
+
 
 
 •	International Diabetes Federation. (2025). IDF Diabetes Atlas (11th ed.). Brussels, Belgium: IDF. https://diabetesatlas.org
 
 
-•	Ong, K., Stafford, L., McLaughlin, S., et al. (2023). Global, regional, and national burden of diabetes from 1990 to 2021, with projections of prevalence to 2050: A systematic analysis for the Global Burden of Disease Study 2021. The Lancet, 402(10385), 203–234. https://doi.org/10.1016/S0140-6736(23)01352-1 (doi.org in Bing)
+•	Ong, K., Stafford, L., McLaughlin, S., et al. (2023). Global, regional, and national burden of diabetes from 1990 to 2021, with projections of prevalence to 2050: A systematic analysis for the Global Burden of Disease Study 2021. The Lancet, 402(10385), 203–234. https://doi.org/10.1016/S0140-6736(23)01352-1 
 
 
 •	Park, J. H., Moon, J. H., Kim, H. J., Kong, M. H., & Oh, Y. H. (2020). Sedentary lifestyle: Overview of updated evidence of potential health risks. Korean Journal of Family Medicine, 41(6), 365–373. https://doi.org/10.4082/kjfm.20.0165
 
+•	Ruze R, Liu T, Zou X, Song J, Chen Y, Xu R, Yin X, Xu Q (2023). Obesity and type 2 diabetes mellitus: connections in epidemiology, pathogenesis, and treatments. Front Endocrinol (Lausanne), 14:1161521. doi: 10.3389/fendo.2023.1161521. PMID: 37152942; PMCID: PMC10161731.
 
-•	Savvopoulos, S., Hatzikirou, H., & Jelinek, H. F. (2024). Comparative analysis of biomarkers in type 2 diabetes patients with and without comorbidities: Insights into the role of hypertension and cardiovascular disease. Biomarker Insights, 19, 11772719231222111. https://doi.org/10.1177/11772719231222111 (doi.org in Bing)
+•	Savvopoulos, S., Hatzikirou, H., & Jelinek, H. F. (2024). Comparative analysis of biomarkers in type 2 diabetes patients with and without comorbidities: Insights into the role of hypertension and cardiovascular disease. Biomarker Insights, 19, 11772719231222111. https://doi.org/10.1177/11772719231222111 
 
 • World Health Organization. (2023). Diabetes. https://www.who.int/news-room/fact-sheets/detail/diabetes
 
