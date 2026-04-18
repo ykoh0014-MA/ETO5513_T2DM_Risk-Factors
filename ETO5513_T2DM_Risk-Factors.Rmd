@@ -12,7 +12,7 @@ output:
 
 # Introduction
 
-According to the 11th edition of the IDF Diabetes Atlas, by 2050 more than one in eight adults worldwide will be living with diabetes, and the global burden is projected to rise sharply in the coming years (International Diabetes Federation, 2025). The complications of diabetes include higher risks of cardiovascular disease, stroke, heart attack, and heart failure (Dam, Verma, & Jasrotia, 2025). Obesity, dietary risks, occupational risks, tobacco use, low physical activity, and alcohol consumption are major risk factors for type 2 diabetes (Ong, Stafford, McLaughlin, et al., 2023).
+According to the 11th edition of the IDF Diabetes Atlas, more than one in eight adults worldwide will be living with diabetes by 2050, and the global burden is projected to rise sharply in the coming years (International Diabetes Federation, 2025). The complications of diabetes include higher risks of cardiovascular disease, stroke, heart attack, and heart failure (Dam, Verma, & Jasrotia, 2025). Obesity, dietary risks, occupational risks, tobacco use, low physical activity, and alcohol consumption are major risk factors for type 2 diabetes (Ong, Stafford, McLaughlin, et al., 2023).
 Emerging evidence also suggests that sedentary behaviours, such as prolonged screen time, and inadequate or excessive sleep duration may contribute to increased diabetes risk through their effects on metabolic regulation and insulin sensitivity (Park, Moon, Kim, Kong, & Oh, 2020). Clinical biomarkers such as glycated haemoglobin (HbA1c), blood pressure, and cholesterol are widely recognized as key indicators of metabolic health, strongly linked to diabetes diagnosis, progression, and cardiovascular risk. Evaluating the interplay between these parameters and diabetes status yields valuable insights into disease management, risk stratification, and long-term health outcomes (Savvopoulos, Hatzikirou, & Jelinek, 2024).
 This study aims to: (1) describe the demographic profile of individuals with and without diabetes; (2) assess the association between lifestyle factors and diabetes; (3) evaluate the relationship between clinical variables and diabetes; and (4) identify the overall key risk factors for diabetes using logistic regression (5) identify critical thresholds for risk classification.
 
@@ -37,7 +37,7 @@ library(tableone)
 ```
 ## Demographics by Diabetes Diagnosis
 
-```{r table1, echo=FALSE}
+```{r table1, echo=FALSE, show_col_types = FALSE}
 # Load dataset 
 data <- read_csv("Data/diabetes_dataset.csv")
 
@@ -194,7 +194,7 @@ table1 <- data.frame(
   stringsAsFactors = FALSE
 )
 
-kable(table1, caption = "Table 1: Demographics by Diabetes Diagnosis", align = "lcc")
+kable(table1, caption = "Demographics by Diabetes Diagnosis", align = "lcc")
 ```
 
 
@@ -326,7 +326,7 @@ table2 <- data.frame(
 )
 
 kable(table2,
-      caption = "Table 2: Diabetes Risk Score by Lifestyle Factors",
+      caption = "Diabetes Risk Score by Lifestyle Factors",
       align = "lc")
 ```
 
@@ -358,7 +358,7 @@ To understand the association of clinical variables with diabetes, independent t
 
 data <- data %>%
   mutate(
-    diagnosed_diabetes = factor(diagnosed_diabetes, levels = c(0, 1), labels = c("No", "Yes")),
+    diagnosed_diabetes = factor(diagnosed_diabetes, levels = c(0, 1), labels = c("No Diabetes", "Diabetes")),
     family_history_diabetes = factor(family_history_diabetes, levels = c(0, 1), labels = c("No", "Yes")),
     hypertension_history = factor(hypertension_history, levels = c(0, 1), labels = c("No", "Yes")),
     cardiovascular_history = factor(cardiovascular_history, levels = c(0, 1), labels = c("No", "Yes"))
@@ -374,9 +374,10 @@ table_three <- CreateTableOne(vars = vars,
                               factorVars = c( "diabetes_stage"))
 
 
+
 knitr::kable(
   print(table_three, showAllLevels = TRUE),
-  caption = "Baseline Clinical Parameters of Patients"
+  caption = "Baseline Clinical Parameters of Patients with and without Diabetes"
 )
 
 
@@ -389,7 +390,7 @@ Table \@ref(tab:table3) reveals the differences in clinical parameters between i
 
 
 
-## Boxplot of Systolic BP vs Diabetes Diagnosis
+## Boxplot of Systolic BP by Diabetes Diagnosis
 
 ```{r chart3, echo=FALSE, fig.cap="Boxplot of Systolic BP by Diabetes Diagnosis"}
 
@@ -412,7 +413,7 @@ To determine the risk factors of diabetes, potential factors from the above anal
 
 
 
-## Risk factors of diabetes using logistic regression 
+## Risk Factors of Diabetes using Logistic Regression 
 
 
 ```{r LR, echo=FALSE}
@@ -511,8 +512,11 @@ Beyond HbA1c values of 8, the predicted probability approaches 1, suggesting tha
 # Conclusion
 
 
-Overall, the findings indicate that age is the primary demographic factor associated with diabetes, while other socio-demographic characteristics show minimal differences between groups, consistent with evidence linking ageing to increased metabolic risk (World Health Organization, 2023). In contrast, lifestyle behaviours demonstrate a clearer relationship with diabetes risk, with low physical activity, poor diet, inadequate sleep, and higher screen time linked to elevated risk scores. However, screen time alone appears to be a weak independent predictor (Ekelund et al., 2019). These results suggest that while demographic factors provide limited differentiation, modifiable lifestyle behaviours play a more meaningful role in shaping diabetes risk. The logistic regression analysis underscores the multifactorial nature of diabetes risk, integrating clinical biomarkers, demographic factors, and lifestyle behaviours. HbA1c emerged as the most powerful predictor, with a sharp inflection around 6.5% marking the transition from low to high probability of diabetes. This threshold is consistent with established diagnostic guidelines and highlights HbA1c’s central role in risk stratification (American Diabetes Association, 2024). Fasting glucose also demonstrated significant predictive value, reinforcing its clinical utility in early detection (International Diabetes Federation, 2025). Age, BMI, and family history were positively associated with diabetes, reflecting cumulative biological and genetic influences. These findings align with prior epidemiological studies that emphasize the interplay of age-related metabolic decline, adiposity, and hereditary predisposition (Hu et al., 2020). Conversely, protective factors such as higher physical activity, better diet quality, and elevated HDL cholesterol were linked to reduced risk, underscoring the importance of lifestyle interventions in prevention (Ong et al., 2023; Park et al., 2020). HbA1c levels strongly predict diabetes probability, with a sharp inflection around 6.5%, marking a clinically relevant threshold for risk classification.
+Overall, the findings indicate that age is the primary demographic factor associated with diabetes, while other socio-demographic characteristics show minimal differences between groups, consistent with evidence linking ageing to increased metabolic risk (World Health Organization, 2023). In contrast, lifestyle behaviours demonstrate a clearer relationship with diabetes risk, with low physical activity, poor diet, inadequate sleep, and higher screen time linked to elevated risk scores. However, screen time alone appears to be a weak independent predictor (Ekelund et al., 2019). These results suggest that while demographic factors provide limited differentiation, modifiable lifestyle behaviours play a more meaningful role in shaping diabetes risk. 
 
+The logistic regression analysis reinforced the multifactorial nature of diabetes, integrating biomarkers, demographics, and lifestyle. HbA1c emerged as the most powerful predictor, with a sharp inflection around 6.5% marking the transition from low to high probability of diabetes. This threshold is consistent with established diagnostic guidelines and highlights HbA1c’s central role in risk stratification (American Diabetes Association, 2024). Fasting glucose also demonstrated significant predictive value, reinforcing its clinical utility in early detection (International Diabetes Federation, 2025). 
+
+Age, BMI, and family history were positively associated with diabetes, reflecting some genetic influences. These findings align with prior epidemiological studies that emphasize the interplay of age-related metabolic decline, adiposity, and hereditary predisposition (Hu et al., 2020). Conversely, protective factors such as higher physical activity, better diet quality, and elevated HDL cholesterol were linked to reduced risk, underscoring the importance of lifestyle interventions in prevention (Ong et al., 2023; Park et al., 2020). 
 
 
 # References
